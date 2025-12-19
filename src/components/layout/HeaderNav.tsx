@@ -1,3 +1,4 @@
+// src/components/layout/HeaderNav.tsx
 "use client";
 
 import { useState } from "react";
@@ -5,7 +6,7 @@ import WalletConnectModal from "./WalletConnectModal";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import WalletButton from "./WalletButton";
-//import BottomTabs from "./BottomTabs";
+import BottomTabs from "./BottomTabs";
 import MobileMainMenu from "./MobileMenu";
 import Image from "next/image";
 
@@ -15,15 +16,16 @@ export default function HeaderNav() {
   const [isWalletModalOpen, setWalletModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Ambil slug aktif dari URL, jika kosong default ke pixel-chaos
+  // 1. Ambil slug aktif dari URL, jika kosong default ke pixel-chaos
   const activeSlug = searchParams.get("slug") || "parodee-pixel-chaos";
 
-  // KONFIGURASI MENU COLLECT (Label + Slug)
+  // 2. KONFIGURASI MENU COLLECT (Label + Slug)
   const collectMenuOptions = [
     { label: "Pixel Chaos", slug: "parodee-pixel-chaos" },
     { label: "HyperEVM", slug: "parodee-hyperevm" },
   ];
 
+  // 3. Prepare items for Mobile Menu (Only Collect items now)
   const mobileMenuItems = collectMenuOptions.map((option) => ({
     label: option.label,
     href: `/collect?slug=${option.slug}`,
@@ -33,10 +35,11 @@ export default function HeaderNav() {
 
   return (
     <header className="sticky top-0 z-30 bg-brand-blue">
-      <div className="relative mx-auto max-w-6xl px-6 pt-7 pb-3 md:pb-6">
+      <div className="relative mx-auto px-6 md:px-8 pt-7 pb-3 md:pb-6">
         
         {/* ROW: Logo | (menu kecil desktop) | CTA */}
         <div className="mt-3 md:mt-5 lg:mt-8 flex items-center justify-between gap-4">
+
           <Link href="/" className="flex flex-none items-center gap-3">
             <Image
               src="/icon/logo.svg"
@@ -53,7 +56,8 @@ export default function HeaderNav() {
           {/* Menu kecil – DESKTOP */}
           <nav className="hidden flex-1 items-center justify-center md:flex">
             <div className="flex items-center gap-10 text-md md:text-xl">
-              {/* LOGIC RENDERING MENU: Only Collect Options */}
+
+              {/* LOGIC RENDERING MENU: ONLY COLLECT */}
               {collectMenuOptions.map((option) => {
                 const isActive = activeSlug === option.slug;
                 return (
@@ -71,6 +75,7 @@ export default function HeaderNav() {
                   </Link>
                 );
               })}
+
             </div>
           </nav>
 
@@ -95,7 +100,7 @@ export default function HeaderNav() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border-[3px] border-black bg-white shadow-cartoonTwo md:hidden active:translate-x-1 active:translate-y-1 active:shadow-none"
+              className="flex h-10 w-10 items-center justify-center rounded-lg border-[3px] border-black bg-white shadow-[4px_4px_0_rgba(0,0,0,1)] md:hidden active:translate-x-1 active:translate-y-1 active:shadow-none"
               aria-label="Open menu"
             >
               <div className="flex flex-col gap-[3px]">
@@ -115,12 +120,10 @@ export default function HeaderNav() {
         smallMenu={mobileMenuItems}
         ctaLabel={ctaLabel}
       />
-
-      {/*<BottomTabs />
       <WalletConnectModal
         open={isWalletModalOpen}
         onClose={() => setWalletModalOpen(false)}
-      />*/}
+      />
     </header>
   );
 }
