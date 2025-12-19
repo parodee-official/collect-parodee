@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional: kalau mau sedikit tweak global */
+
+/* styles/globals.css */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Variable.ttf') format('truetype');
+  font-weight: 100 900; /* variable */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* fallback generic */
+:root {
+  --font-satoshi: 'Satoshi', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue";
+}
+
+/* optional global */
+html, body {
+  font-family: var(--font-satoshi);
+}
+
+
+body {
+  @apply bg-brand-blue text-black;
+}
+
+/* Hilangkan tap highlight jelek di mobile */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide scrollbar on Chrome/Safari */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar on Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150,150,150,0.7) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(150,150,150,0.7);
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
