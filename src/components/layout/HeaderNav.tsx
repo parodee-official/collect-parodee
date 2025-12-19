@@ -5,7 +5,7 @@ import { useState } from "react";
 import WalletConnectModal from "./WalletConnectModal";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import WalletButton from "./WalletButton";
+// import WalletButton from "./WalletButton"; // Commented out
 import BottomTabs from "./BottomTabs";
 import MobileMainMenu from "./MobileMenu";
 import Image from "next/image";
@@ -83,12 +83,14 @@ export default function HeaderNav() {
           <div className="flex flex-none items-center gap-3">
             {/* Desktop CTA + avatar */}
             <div className="hidden items-center gap-3 md:flex">
-              <div className="min-w-[170px]">
+              {/* Wallet Button Commented Out */}
+              {/* <div className="min-w-[170px]">
                 <WalletButton
                   label={ctaLabel}
                   onClick={() => setWalletModalOpen(true)}
                 />
-              </div>
+              </div> */}
+              
               <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-white">
                 <span role="img" aria-label="avatar">
                   🧑‍🎨

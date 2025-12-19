@@ -314,6 +314,10 @@ export default function CollectItemModal({
               {activeTab === "bids" && (
                 <div className="flex flex-col h-full">
                   <div className="mt-auto border-t border-black/5">
+                      {/* ===========================================================
+                      COMMENTED OUT: WALLET CONNECTION CHECK
+                      User doesn't need to connect wallet to see bids
+                      ===========================================================
                       {isConnecting ? (
                       <div className="flex flex-col h-full items-center justify-center min-h-[150px]">
                           <div className="h-6 w-6 animate-spin rounded-full border-2 border-black border-t-transparent mb-2"></div>
@@ -335,7 +339,11 @@ export default function CollectItemModal({
                           ))}
                         </div>
                       </div>
-                    )  : (
+                    )  : ( 
+                      ===========================================================
+                    */}
+                    
+                    {/* ALWAYS SHOW BIDS (Formerly inside the 'else' block of !isConnected) */}
                     <>
                       <div className="flex-1 overflow-y-auto text-[10px] sm:text-[11px] mb-4 border-b border-gray-100 pb-2 ">
                         {loadingBids ? (
@@ -362,7 +370,12 @@ export default function CollectItemModal({
                         <span className="text-xs font-black uppercase tracking-widest">Place Bid on OpenSea</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="mb-0.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                       </a>
                     </>
-                    )}
+
+                    {/* ===========================================================
+                     CLOSING BRACE FOR THE COMMENTED OUT BLOCK
+                     ) } 
+                     ===========================================================
+                    */}
                   </div>
                 </div>
               )}
