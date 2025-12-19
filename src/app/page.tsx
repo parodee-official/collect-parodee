@@ -25,51 +25,52 @@ const collections: Collection[] = [
 export default function Page() {
   return (
     <main className="min-h-screen bg-brand-main text-white">
-      <div className="mx-auto max-w-5xl px-4 py-16">
+      <div className="mx-auto max-w-5xl px-4 py-14 md:py-20">
 
         {/* HERO */}
-        <section className="mb-20">
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+        <section className="mb-16 md:mb-24">
+          <h1 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
             Collect The Most Finest <br />
             <span className="text-zinc-300">Art On The Space</span>
           </h1>
         </section>
 
         {/* COLLECTION TITLE */}
-        <section className="mb-10">
-          <h1 className="text-center text-zinc-500 text-lg md:text-4xl font-medium">
+        <section className="mb-8 md:mb-14">
+          <h2 className="text-center text-zinc-600 text-2xl md:text-4xl font-semibold tracking-wide">
             Collection
-          </h1>
+          </h2>
         </section>
 
-        {/* COLLECTION CARDS (DINAMIS) */}
-        <section className="space-y-8">
+        {/* COLLECTION CARDS */}
+        <section className="space-y-6 md:space-y-10">
           {collections.map((collection) => (
             <div
               key={collection.id}
               className="
-                flex flex-col lg:flex-row
-                gap-12
+                flex flex-col-reverse md:flex-row
+                items-center
+                gap-6 md:gap-10
                 rounded-3xl
                 bg-[#292929]
-                p-8
-                px-12
+                p-5 md:p-8
                 border-4 border-black
                 shadow-cartoonTwo
               "
             >
-              {/* LEFT */}
-              <div className="flex flex-1 flex-col justify-center">
-                <h3 className="text-3xl md:text-4xl font-extrabold mb-4">
+              {/* LEFT - TEXT */}
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-xl md:text-4xl font-extrabold mb-3">
                   {collection.title}
                 </h3>
 
-                <p className="text-sm leading-relaxed text-zinc-300 max-w-xl mb-8">
+                <p className="text-sm text-zinc-300 leading-relaxed max-w-xl mx-auto md:mx-0 mb-6">
                   {collection.description}
                 </p>
 
                 <button
                   className="
+                    inline-flex
                     w-full
                     rounded-xl
                     bg-brand-yellow
@@ -79,6 +80,8 @@ export default function Page() {
                     border-4 border-black
                     hover:bg-yellow-300
                     transition
+
+                    justify-center
                   "
                 >
                   DISCOVER COLLECTION
@@ -86,12 +89,13 @@ export default function Page() {
               </div>
 
               {/* RIGHT - NFT GRID */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 md:gap-4 shrink-0">
                 {collection.items.map((_, i) => (
                   <div
                     key={i}
                     className="
-                      h-28 w-28 md:h-36 md:w-36
+                      h-24 w-24
+                      md:h-36 md:w-36
                       rounded-2xl
                       bg-zinc-700
                       border-4 border-black
@@ -107,15 +111,7 @@ export default function Page() {
           ))}
         </section>
 
-
       </div>
     </main>
   )
 }
-
-// import { redirect } from 'next/navigation';
-
-// export default function Home() {
-//   // Langsung arahkan ke /collect
-//   redirect('/collect');
-// }

@@ -20,7 +20,7 @@ function HeaderFallback() {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-brand-main text-black">
+    <div className="flex min-h-screen flex-col bg-brand-main text-black ">
 
       {/* 3. Bungkus HeaderNav dengan Suspense */}
       <Suspense fallback={<HeaderFallback />}>
@@ -28,7 +28,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       </Suspense>
 
       <main className="flex-1">
-        <div className="mx-auto max-w-6xl px-4 md:px-8 pb-20 pt-4 md:pb-8">
+        <div className="mx-auto max-w-6xl px-4 md:px-8  pb-20 pt-4 md:pb-8">
           {/* AREA TEST (Bisa dihapus jika sudah tidak dipakai) */}
           {/* <div className="p-4 border border-red-500 mb-4">
              <p className="text-red-500 font-bold">TEST AREA (ConnectButton)</p>

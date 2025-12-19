@@ -2,13 +2,15 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from "next/image"
 import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
-  const isCollectPage = pathname === '/collect/items'
+  // const isCollectPage = pathname === '/collect/items'
+  const isCollectPage = pathname.startsWith('/collect')
 
   const collectMenuOptions = [
   { label: 'Pixel Chaos', slug: 'parodee-pixel-chaos' },
@@ -16,13 +18,20 @@ export default function Navbar() {
 ]
 
   return (
-    <nav className="w-full bg-brand-main border-b border-[#1E1E1E]">
+    <nav className="w-full bg-brand-main border-b px-4 md:px-8 border-[#1E1E1E]">
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <div className="flex h-16 items-center justify-between">
 
           {/* Logo */}
           <Link href="/" className="text-white font-semibold text-lg tracking-wide">
-            Collect<span className="text-zinc-400">.parodee</span>
+            <Image
+              src="/icon/logo.svg"
+              alt="Parodee"
+              width={200}
+              height={64}
+              className="w-auto h-6 sm:h-8 md:h-10"
+            />
+
           </Link>
 
           {/* Desktop Menu */}
