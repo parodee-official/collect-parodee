@@ -1,131 +1,61 @@
-// src/components/layout/HeaderNav.tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import WalletConnectModal from "./WalletConnectModal";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-// import WalletButton from "./WalletButton"; // Commented out
-import BottomTabs from "./BottomTabs";
-import MobileMainMenu from "./MobileMenu";
-import Image from "next/image";
+import { useState } from 'react'
+import Link from 'next/link'
 
-export default function HeaderNav() {
-  const searchParams = useSearchParams();
-
-  const [isWalletModalOpen, setWalletModalOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // 1. Ambil slug aktif dari URL, jika kosong default ke pixel-chaos
-  const activeSlug = searchParams.get("slug") || "parodee-pixel-chaos";
-
-  // 2. KONFIGURASI MENU COLLECT (Label + Slug)
-  const collectMenuOptions = [
-    { label: "Pixel Chaos", slug: "parodee-pixel-chaos" },
-    { label: "HyperEVM", slug: "parodee-hyperevm" },
-  ];
-
-  // 3. Prepare items for Mobile Menu (Only Collect items now)
-  const mobileMenuItems = collectMenuOptions.map((option) => ({
-    label: option.label,
-    href: `/collect?slug=${option.slug}`,
-  }));
-
-  const ctaLabel = "CONNECT WALLET";
+export default function Navbar() {
+  const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 bg-brand-blue">
-      <div className="relative mx-auto px-6 md:px-8 pt-7 pb-3 md:pb-6">
-        
-        {/* ROW: Logo | (menu kecil desktop) | CTA */}
-        <div className="mt-3 md:mt-5 lg:mt-8 flex items-center justify-between gap-4">
+    <nav className="w-full bg-brand-main border-b border-[#1E1E1E]">
+      <div className="mx-auto max-w-6xl px-4 md:px-8">
+        <div className="flex h-16 items-center justify-between">
 
-          <Link href="/" className="flex flex-none items-center gap-3">
-            <Image
-              src="/icon/logo.svg"
-              alt="P Icon"
-              width={32}
-              height={32}
-              className="object-contain select-none"
-            />
-            <span className="text-xl md:text-2xl font-extrabold text-white">
-              Marketplace
-            </span>
+          {/* Logo */}
+          <Link href="/" className="text-white font-semibold text-lg tracking-wide">
+            Collect<span className="text-zinc-400">.parodee</span>
           </Link>
 
-          {/* Menu kecil – DESKTOP */}
-          <nav className="hidden flex-1 items-center justify-center md:flex">
-            <div className="flex items-center gap-10 text-md md:text-xl">
-
-              {/* LOGIC RENDERING MENU: ONLY COLLECT */}
-              {collectMenuOptions.map((option) => {
-                const isActive = activeSlug === option.slug;
-                return (
-                  <Link
-                    key={option.slug}
-                    href={`/collect?slug=${option.slug}`}
-                    className={[
-                      "cursor-pointer whitespace-nowrap transition-colors",
-                      isActive
-                        ? "font-bold text-white decoration-2 underline-offset-4"
-                        : "font-semibold text-white/80 hover:text-white text-sm",
-                    ].join(" ")}
-                  >
-                    Parodee : {option.label}
-                  </Link>
-                );
-              })}
-
-            </div>
-          </nav>
-
-          {/* Kanan: Desktop → CTA + avatar, Mobile → Hamburger */}
-          <div className="flex flex-none items-center gap-3">
-            {/* Desktop CTA + avatar */}
-            <div className="hidden items-center gap-3 md:flex">
-              {/* Wallet Button Commented Out */}
-              {/* <div className="min-w-[170px]">
-                <WalletButton
-                  label={ctaLabel}
-                  onClick={() => setWalletModalOpen(true)}
-                />
-              </div> */}
-              
-              <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-black bg-white">
-                <span role="img" aria-label="avatar">
-                  🧑‍🎨
-                </span>
-              </div>
-            </div>
-
-            {/* Mobile hamburger */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border-[3px] border-black bg-white shadow-[4px_4px_0_rgba(0,0,0,1)] md:hidden active:translate-x-1 active:translate-y-1 active:shadow-none"
-              aria-label="Open menu"
-            >
-              <div className="flex flex-col gap-[3px]">
-                <span className="block h-[2px] w-4 bg-black" />
-                <span className="block h-[2px] w-4 bg-black" />
-                <span className="block h-[2px] w-4 bg-black" />
-              </div>
-            </button>
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-8 text-sm text-zinc-300">
+            <Link href="/collect" className="hover:text-white transition">
+              Collections
+            </Link>
+            <Link href="/art" className="hover:text-white transition">
+              Art
+            </Link>
+            <Link href="/item" className="hover:text-white transition">
+              Item
+            </Link>
           </div>
+
+          {/* Mobile Button */}
+          <button
+            onClick={() => setOpen(!open)}
+            className="md:hidden text-zinc-300 hover:text-white"
+            aria-label="Toggle Menu"
+          >
+            ☰
+          </button>
         </div>
       </div>
 
-      {/* Mobile menu overlay */}
-      <MobileMainMenu
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        smallMenu={mobileMenuItems}
-        ctaLabel={ctaLabel}
-      />
-      <WalletConnectModal
-        open={isWalletModalOpen}
-        onClose={() => setWalletModalOpen(false)}
-      />
-    </header>
-  );
+      {/* Mobile Menu */}
+      {open && (
+        <div className="md:hidden border-t border-zinc-800 bg-zinc-900">
+          <div className="flex flex-col px-4 py-3 text-sm text-zinc-300">
+            <Link href="/collections" className="py-2 hover:text-white">
+              Collections
+            </Link>
+            <Link href="/art" className="py-2 hover:text-white">
+              Art
+            </Link>
+            <Link href="/item" className="py-2 hover:text-white">
+              Item
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
+  )
 }

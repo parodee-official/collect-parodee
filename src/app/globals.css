@@ -25,7 +25,7 @@ html, body {
 
 
 body {
-  @apply bg-brand-blue text-black;
+  @apply bg-brand-main text-[#FFF];
 }
 
 /* Hilangkan tap highlight jelek di mobile */

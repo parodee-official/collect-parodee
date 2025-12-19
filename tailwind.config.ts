@@ -12,7 +12,8 @@ const config: Config = {
       colors: {
         // warna utama UI
         brand: {
-          blue: "#43C4FF",   // background utama
+          main : "#151515",
+          seccond: "#404040",   // background utama
           yellow: "#FFEC40", // button penting
         },
       },

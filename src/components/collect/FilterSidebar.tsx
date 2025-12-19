@@ -47,7 +47,7 @@ function AttributeSelectorCard({
   }, [traitType]);
 
   return (
-    <div className={`px-5 ${compact ? "py-3" : "py-4"} bg-white`}>
+    <div className={`px-5 ${compact ? "py-3" : "py-4"} bg-[#5A5A5A]`}>
       <div className="flex gap-3">
         <div
           ref={listRef}
@@ -65,12 +65,12 @@ function AttributeSelectorCard({
                   className="group cursor-pointer"
                 >
                   <div className="flex items-center justify-between pb-2">
-                    <span className={`${isSelected ? "font-bold text-black" : "font-medium text-[#000]"}`}>
+                    <span className={`${isSelected ? "font-bold text-white" : "font-medium text-white"}`}>
                       {val}
                     </span>
-                    {isSelected && <span className="text-sm font-bold text-black">✓</span>}
+                    {isSelected && <span className="text-sm font-bold text-whi">✓</span>}
                   </div>
-                  <div className="h-[2px] w-full bg-[#000] group-hover:bg-black transition-colors" />
+                  <div className="h-[2px] w-full bg-[#9D9D9D] group-hover:bg-black transition-colors" />
                 </div>
               );
             })
@@ -106,14 +106,14 @@ function SidebarContent({
 
   return (
     <div className="w-full flex flex-col gap-6">
-      {/* Show unlisted (same visual as reference) 
+      {/* Show unlisted (same visual as reference)
         type="button"
         onClick={onShowUnlistedClick}
         className="w-full rounded-2xl border-[4px] border-black bg-white px-5 py-3 text-center text-sm font-black text-black"
       >
         Show unlisted
       </button>
-        
+
       <div className="mx-1 h-[2px] bg-[#AFAFAF] opacity-80" />
 */}
       <div className="flex flex-col gap-8">
@@ -127,8 +127,8 @@ function SidebarContent({
                 type="button"
                 onClick={() => setActiveTraitType((prev) => (prev === key ? null : key))}
                 className={`
-                  relative z-10 w-full px-4 py-3 text-sm font-black transition-all duration-100 flex items-center justify-center
-                  border-4 border-black bg-white
+                  relative z-10 w-full px-4 py-3 text-sm text-white font-black transition-all duration-100 flex items-center justify-center
+                  border-4 border-black bg-[#5A5A5A]
                   ${isActive ? "rounded-t-2xl border-b-0" : "rounded-2xl hover:bg-[#FFEC40]"}
                   ${hasActiveFilter && !isActive ? "bg-gray-100" : ""}
                 `}
@@ -142,7 +142,7 @@ function SidebarContent({
               {/* merged panel: border-t-0 so no divider; -mt to overlap the stroke and remove visible seam */}
               <div
                 className={`
-                  overflow-hidden bg-white transition-[max-height,opacity] duration-300 ease-in
+                  overflow-hidden bg-[#5A5A5A] transition-[max-height,opacity] duration-300 ease-in
                   -mt-[2.5px]
                   ${isActive ? "max-h-[520px] border-4 border-t-0 border-black rounded-b-[20px] opacity-100 pb-3" : "max-h-0 border-0 border-transparent opacity-0"}
                 `}
@@ -168,7 +168,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
   return (
     <aside className="hidden md:block md:w-[230px] flex-shrink-0">
       <div
-        className="relative bg-white border-[4px] border-black rounded-[28px] p-5 py-12 shadow-cartoon"
+        className="relative bg-brand-seccond border-[4px] border-black rounded-[28px] p-5 py-12 shadow-cartoon"
       >
         <SidebarContent {...props} />
       </div>
