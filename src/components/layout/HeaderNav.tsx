@@ -2,9 +2,18 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isCollectPage = pathname === '/collect/items'
+
+  const collectMenuOptions = [
+  { label: 'Pixel Chaos', slug: 'parodee-pixel-chaos' },
+  { label: 'HyperEVM', slug: 'parodee-hyperevm' },
+]
 
   return (
     <nav className="w-full bg-brand-main border-b border-[#1E1E1E]">
@@ -18,22 +27,38 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8 text-sm text-zinc-300">
-            <Link href="/collect" className="hover:text-white transition">
-              Collections
-            </Link>
-            <Link href="/art" className="hover:text-white transition">
-              Art
-            </Link>
-            <Link href="/item" className="hover:text-white transition">
-              Item
-            </Link>
+
+            {!isCollectPage && (
+              <>
+                <Link href="/collect" className="hover:text-white">
+                  Collections
+                </Link>
+                <Link href="/art" className="hover:text-white">
+                  Art
+                </Link>
+                <Link href="/item" className="hover:text-white">
+                  Item
+                </Link>
+              </>
+            )}
+
+            {isCollectPage &&
+              collectMenuOptions.map((option) => (
+                <Link
+                  key={option.slug}
+                  href={`/collect/items?slug=${option.slug}`}
+                  className="hover:text-white transition"
+                >
+                  {option.label}
+                </Link>
+              ))}
+
           </div>
 
           {/* Mobile Button */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden text-zinc-300 hover:text-white"
-            aria-label="Toggle Menu"
+            className="md:hidden text-zinc-300"
           >
             ☰
           </button>
@@ -44,15 +69,32 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t border-zinc-800 bg-zinc-900">
           <div className="flex flex-col px-4 py-3 text-sm text-zinc-300">
-            <Link href="/collections" className="py-2 hover:text-white">
-              Collections
-            </Link>
-            <Link href="/art" className="py-2 hover:text-white">
-              Art
-            </Link>
-            <Link href="/item" className="py-2 hover:text-white">
-              Item
-            </Link>
+
+            {!isCollectPage && (
+              <>
+                <Link href="/collect" className="py-2">
+                  Collections
+                </Link>
+                <Link href="/art" className="py-2">
+                  Art
+                </Link>
+                <Link href="/item" className="py-2">
+                  Item
+                </Link>
+              </>
+            )}
+
+            {isCollectPage &&
+              collectMenuOptions.map((option) => (
+                <Link
+                  key={option.slug}
+                  href={`/collect?slug=${option.slug}`}
+                  className="py-2"
+                >
+                  {option.label}
+                </Link>
+              ))}
+
           </div>
         </div>
       )}

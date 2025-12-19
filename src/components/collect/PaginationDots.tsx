@@ -67,7 +67,7 @@ export default function PaginationDots({
         onClick={() => goTo(currentPage - 1)}
         disabled={currentPage === 1}
         className={[
-          "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black bg-white text-sm font-bold transition-transform active:scale-95",
+          "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black bg-white text-black text-sm font-bold transition-transform active:scale-95",
           "shadow-[2px_2px_0px_#000000]",
           currentPage === 1 && "opacity-40 pointer-events-none",
         ]
