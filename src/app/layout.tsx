@@ -10,6 +10,9 @@ import MainLayout from "@/components/layout/MainLayout";
 export const metadata: Metadata = {
   title: "Collect",
   description: "Pixel-art NFT style marketplace for collectibles and merch.",
+  icons: {
+    icon: "/icon/favicon.svg",
+  },
 };
 
 export default function RootLayout({
