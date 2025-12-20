@@ -35,8 +35,7 @@ export default function CollectHeader() {
           className="
             relative
             mx-auto
-            max-w-5xl
-            h-[clamp(220px,30vw,300px)]
+            h-[clamp(220px,30vw,380px)]
             rounded-xl
             overflow-hidden
             border-4 border-black
@@ -44,7 +43,7 @@ export default function CollectHeader() {
           "
           style={{ backgroundImage: "url('/images/Banner.png')" }}
         >
-          <div className="absolute inset-0 bg-black/5" />
+          {/* <div className="absolute inset-0 bg-black/5" /> */}
 
           <h1
             className="

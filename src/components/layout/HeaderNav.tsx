@@ -27,8 +27,8 @@ const getCollectBasePath = () => {
 }
 
   return (
-    <nav className="w-full bg-brand-main border-b px-4 py-2 md:pt-6 md:px-8 border-[#1E1E1E]">
-      <div className="mx-auto max-w-6xl px-4 md:px-8">
+    <nav className="w-full bg-brand-main md:border-b px-4 py-2 md:pt-6 md:px-8 border-[#1E1E1E]">
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
         <div className="flex h-16 items-center justify-between">
 
           {/* Logo */}
@@ -77,17 +77,31 @@ const getCollectBasePath = () => {
           {/* Mobile Button */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden text-zinc-300"
+            className="md:hidden flex items-center justify-center  text-zinc-300 hover:text-white"
+            aria-label="Toggle menu"
           >
-            ☰
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden border-t border-zinc-800 bg-zinc-900">
-          <div className="flex flex-col px-4 py-3 text-sm text-zinc-300">
+        <div className="md:hidden border-t border-[#1E1E1E] ">
+          <div className="flex flex-col px-4 py-3 text-[15px] text-white">
 
             {!isCollectPage && (
               <>

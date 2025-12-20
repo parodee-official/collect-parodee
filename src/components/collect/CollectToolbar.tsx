@@ -37,11 +37,11 @@ export default function CollectToolbar({
         className="flex h-9 w-9 flex-none items-center justify-center rounded-lg border-[3px] border-black bg-[#404040] shadow-[4px_4px_0_rgba(0,0,0,1)] md:hidden active:translate-x-1 active:translate-y-1 active:shadow-none"
         aria-label="Open filters"
       >
-        <div className="flex flex-col gap-[3px]">
-          <span className="block h-[2px] w-5 bg-white" />
-          <span className="block h-[2px] w-3 bg-white" />
-          <span className="block h-[2px] w-4 bg-white" />
-        </div>
+        <img
+          src="/icon/filter.svg"
+          alt=""
+          className="h-4 w-4"
+        />
       </button>
 
       {/* Search bar — unchanged */}

@@ -128,8 +128,8 @@ function SidebarContent({
                 onClick={() => setActiveTraitType((prev) => (prev === key ? null : key))}
                 className={`
                   relative z-10 w-full px-4 py-3 text-sm text-white font-black transition-all duration-100 flex items-center justify-center
-                  border-4 border-black bg-[#5A5A5A]
-                  ${isActive ? "rounded-t-2xl border-b-0" : "rounded-2xl hover:bg-[#FFEC40] hover:text-[#000]"}
+                  border-[3px] md:border-4 border-black bg-[#5A5A5A]
+                  ${isActive ? "rounded-t-2xl border-b-0 md:border-b-0" : "rounded-2xl hover:bg-[#FFEC40] hover:text-[#000]"}
                   ${hasActiveFilter && !isActive ? "bg-gray-100" : ""}
                 `}
               >
@@ -144,7 +144,7 @@ function SidebarContent({
                 className={`
                   overflow-hidden bg-[#5A5A5A] transition-[max-height,opacity] duration-300 ease-in
                   -mt-[2.5px]
-                  ${isActive ? "max-h-[520px] border-4 border-t-0 border-black rounded-b-[20px] opacity-100 pb-3" : "max-h-0 border-0 border-transparent opacity-0"}
+                  ${isActive ? "max-h-[520px] border-[3px] md:border-4 border-t-0 md:border-t-0 border-black rounded-b-[20px] opacity-100 pb-3" : "max-h-0 border-0 border-transparent opacity-0"}
                 `}
               >
                 <AttributeSelectorCard

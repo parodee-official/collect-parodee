@@ -60,7 +60,7 @@ export default function PaginationDots({
   const pages = getPageNumbers();
 
   return (
-    <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+    <div className="mt-6 md:mt-12 flex flex-wrap items-center justify-center gap-2">
       {/* Prev */}
       <button
         type="button"
@@ -94,7 +94,7 @@ export default function PaginationDots({
             onClick={() => goTo(p)}
             aria-current={isActive ? "page" : undefined}
             className={[
-              "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black text-xs font-bold transition-transform active:scale-95",
+              "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black text-xs font-black transition-transform active:scale-95",
               "shadow-[2px_2px_0px_#000000]",
               isActive ? "bg-brand-yellow" : "bg-[#5A5A5A] hover:bg-[#FFEC40]",
             ]
