@@ -63,7 +63,7 @@ export default function CollectHeader() {
 
       {/* SUB NAV */}
       <section className="mt-6 mb-6">
-        <nav className="flex justify-center gap-8 text-sm">
+        <nav className="flex justify-center gap-8 md:gap-10 lg:gap-12 text-sm md:text-lg">
           <NavItem href="/collect/about" label="About" />
           <NavItem href="/collect/items" label="Items" />
           <NavItem href="/collect/dashboard" label="Dashboard" />

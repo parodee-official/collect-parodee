@@ -44,7 +44,7 @@ const getCollectBasePath = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8 text-sm text-zinc-300">
+          <div className="hidden md:flex items-center gap-8 text-sm md:text-lg text-zinc-300">
 
             {!isCollectPage && (
               <>

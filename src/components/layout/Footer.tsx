@@ -4,9 +4,9 @@ export default function Footer() {
 
   return (
     <footer className="">
-      <div className="mx-auto flex flex-col items-center px-4 py-3">
+      <div className="mx-auto flex flex-col items-center px-4 py-3 md:py-5 text-white">
         {/* Garis tipis di tengah, tidak full-bleed ke edge window */}
-        <div className="mb-5 h-[1px] w-full max-w-5xl bg-black" />
+        <div className="mb-5 h-[1px] w-full max-w-5xl bg-[#1E1E1E]" />
 
         {/* Teks copyright di tengah */}
         <p className="text-center text-[10px] font-black sm:text-xs md:text-md">

@@ -198,7 +198,7 @@ export default function CollectItemModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-3 sm:px-4">
       {/* CARD MODAL */}
-      <div className="flex w-full max-w-2xl flex-col min-h-[70vh] sm:min-h-[300px] md:min-h-[350px] max-h-[70vh] md:max-h-[500px] rounded-[24px] border-[3px] border-black bg-brand-seccond text-white p-4 sm:p-6 shadow-cartoon">
+      <div className="flex w-full max-w-2xl flex-col min-h-[70vh] sm:min-h-[300px] md:min-h-[350px] max-h-[70vh] md:max-h-[520px] rounded-[22px] border-[3px] border-black bg-brand-seccond text-white p-4 sm:p-6 shadow-cartoon">
 
          {/* ===== HEADER Desktop ===== */}
         <div className="mb-6 hidden sm:flex flex-none items-start gap-6">
@@ -246,14 +246,14 @@ export default function CollectItemModal({
         </div>
 
         {/* LOWER CARD: Tabs + Content */}
-        <div className="flex-1 overflow-y-auto rounded-[24px] border-[3px] border-black shadow-cartoonTwo bg-[#5A5A5A] p-3 sm:p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex-1 overflow-y-auto rounded-[18px] border-[3px] border-black shadow-cartoonTwo bg-[#5A5A5A] p-3 sm:p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="mb-4 flex gap-4 text-[11px] sm:text-xs">
             {DETAIL_TABS.map((tab) => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`pb-1 transition-colors ${activeTab === tab.id ? "border-black font-semibold" : "border-transparent text-[#A9A9A9] hover:text-black"}`}>{tab.label}</button>
             ))}
           </div>
 
-          <div className="min-h-[160px] rounded-[18px] border-[3px] shadow-cartoonTwo border-black bg-[#7F7F7F] px-3 py-2 sm:px-4 sm:py-3">
+          <div className="min-h-screen rounded-[16px] border-[3px] shadow-cartoonTwo border-black bg-[#7F7F7F] px-3 py-2 sm:px-4 sm:py-3">
               {activeTab === "attributes" && (
                 <>
                 {(traits?.length ?? 0) === 0 ? (

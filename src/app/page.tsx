@@ -15,7 +15,6 @@ type Collection = {
   items: CollectionItem[]
 }
 
-
 const pixelChaos = {
   slug: "parodee-pixel-chaos",
   title: "Parodee : Pixel Chaos",
@@ -51,13 +50,16 @@ function CollectionSection({
         gap-6 md:gap-10
         rounded-3xl
         bg-[#292929]
-        p-8
+        p-8 md:px-16
         border-4 border-black
         shadow-cartoonTwo
+        group
       "
     >
       {/* LEFT */}
-      <div className="flex-1 text-center md:text-left">
+      <div className="flex-1 text-center md:text-left
+      group-hover:scale-[1.03]
+      ">
         <h3 className="text-xl md:text-4xl font-extrabold mb-3">
           {title}
         </h3>
@@ -89,7 +91,9 @@ function CollectionSection({
       </div>
 
       {/* RIGHT */}
-      <div className="grid grid-cols-2 gap-3 md:gap-4 shrink-0">
+      <div className="grid grid-cols-2 gap-3 md:gap-4 shrink-0
+        group-hover:scale-[1.03]
+        ">
         {items.slice(0, 4).map((item) => (
           <div
             key={item.identifier}
@@ -124,7 +128,7 @@ export default function Page() {
 
         {/* HERO */}
         <section className="mb-16 md:mb-24">
-          <h1 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
+          <h1 className="text-3xl md:text-5xl xl:text-6xl font-extrabold leading-tight tracking-tight">
             Collect The Most Finest <br />
             <span className="text-zinc-300">Art On The Space</span>
           </h1>
@@ -132,7 +136,7 @@ export default function Page() {
 
         {/* COLLECTION TITLE */}
         <section className="mb-8 md:mb-14">
-          <h2 className="text-center text-zinc-600 text-2xl md:text-4xl font-semibold tracking-wide">
+          <h2 className="text-center text-zinc-600 text-2xl md:text-4xl lg:text-5xl font-bold tracking-tighter ">
             Collection
           </h2>
         </section>

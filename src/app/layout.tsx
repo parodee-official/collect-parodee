@@ -8,7 +8,7 @@ import MainLayout from "@/components/layout/MainLayout";
 
 
 export const metadata: Metadata = {
-  title: "Marketplace",
+  title: "Collect",
   description: "Pixel-art NFT style marketplace for collectibles and merch.",
 };
 
