@@ -14,7 +14,7 @@ export default function Navbar() {
 
   const collectMenuOptions = [
   { label: 'Pixel Chaos', slug: 'parodee-pixel-chaos' },
-  { label: 'HyperEVM', slug: 'parodee-hyperevm' },
+  { label: 'First Gen', slug: 'parodee-hyperevm' },
 ]
 
 const getCollectBasePath = () => {
@@ -51,10 +51,10 @@ const getCollectBasePath = () => {
                 <Link href="/collect" className="hover:text-white">
                   Collections
                 </Link>
-                <Link href="/art" className="hover:text-white">
+                <Link href="#/" className="hover:text-white">
                   Art
                 </Link>
-                <Link href="/item" className="hover:text-white">
+                <Link href="#/" className="hover:text-white">
                   Item
                 </Link>
               </>

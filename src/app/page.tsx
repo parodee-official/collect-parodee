@@ -60,7 +60,7 @@ function CollectionSection({
       <div className="flex-1 text-center md:text-left
       group-hover:scale-[1.03]
       ">
-        <h3 className="text-xl md:text-4xl font-extrabold mb-3">
+        <h3 className="text-2xl md:text-4xl font-extrabold mb-3">
           {title}
         </h3>
 
@@ -75,7 +75,7 @@ function CollectionSection({
               w-full
               rounded-xl
               bg-brand-yellow
-              px-6 py-3
+               px-4 md:px-6 py-2 md:py-3
               font-black
               text-black
               border-4 border-black
@@ -136,7 +136,7 @@ export default function Page() {
 
         {/* COLLECTION TITLE */}
         <section className="mb-8 md:mb-14">
-          <h2 className="text-center text-zinc-600 text-2xl md:text-4xl lg:text-5xl font-bold tracking-tighter ">
+          <h2 className="text-center text-zinc-600 text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter ">
             Collection
           </h2>
         </section>
