@@ -1,8 +1,10 @@
 // src/app/collect/page.tsx
 import { openSeaClient } from "@/lib/opensea";
+import { Suspense } from "react"
 import CollectPageClient from "@/components/collect/CollectPageClient";
 import pixelchaos from "@/data/pixelchaos.json";
 import hyperevm from "@/data/hyperevm.json";
+import CollectHeader from "@/components/collect/CollectHeader";
 
 //export default async function CollectPage() {
   //let nfts: any[] = [];
@@ -46,11 +48,18 @@ export default async function CollectPage({ searchParams }: Props) {
   });
 
   return (
+    <>
+    <Suspense fallback={null}>
+      <CollectHeader />
+    </Suspense>
+
     <CollectPageClient
       // Penting: Key ini memaksa re-render saat slug berubah
       key={slug}
       initialItems={safeData as any[]}
       activeSlug={slug}
     />
+
+    </>
   );
 }

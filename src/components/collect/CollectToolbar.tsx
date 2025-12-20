@@ -34,31 +34,31 @@ export default function CollectToolbar({
       <button
         type="button"
         onClick={() => onOpenFilter?.()}
-        className="flex h-9 w-9 flex-none items-center justify-center rounded-lg border-[3px] border-black bg-white shadow-[4px_4px_0_rgba(0,0,0,1)] md:hidden active:translate-x-1 active:translate-y-1 active:shadow-none"
+        className="flex h-9 w-9 flex-none items-center justify-center rounded-lg border-[3px] border-black bg-[#404040] shadow-[4px_4px_0_rgba(0,0,0,1)] md:hidden active:translate-x-1 active:translate-y-1 active:shadow-none"
         aria-label="Open filters"
       >
         <div className="flex flex-col gap-[3px]">
-          <span className="block h-[2px] w-5 bg-black" />
-          <span className="block h-[2px] w-3 bg-black" />
-          <span className="block h-[2px] w-4 bg-black" />
+          <span className="block h-[2px] w-5 bg-white" />
+          <span className="block h-[2px] w-3 bg-white" />
+          <span className="block h-[2px] w-4 bg-white" />
         </div>
       </button>
 
       {/* Search bar — unchanged */}
       <div className="w-full flex-1 min-w-[200px] sm:min-w-[250px]">
-        <div className="flex items-center rounded-[20px] border-[3px] md:border-[4px] border-black bg-brand-seccond px-3 py-1 md:py-2 sm:px-4 shadow-[4px_4px_0_rgba(0,0,0,1)] md:shadow-cartoon hover:-translate-x-0.5 hover:-translate-y-0.5">
+        <div className="flex items-center rounded-[20px] border-[3px] md:border-[4px] border-black bg-brand-seccond text-white px-3 py-1 md:py-2 sm:px-4 shadow-[4px_4px_0_rgba(0,0,0,1)] md:shadow-cartoon hover:-translate-x-0.5 hover:-translate-y-0.5">
           <input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search item, traits..."
-            className="mr-2 flex-1 border-none bg-transparent text-xs sm:text-sm outline-none placeholder:text-gray-400"
+            className="mr-2 flex-1 border-none bg-transparent text-xs sm:text-sm outline-none placeholder:text-white"
           />
           <button
             type="button"
             className="flex h-6 md:h-7 w-6 md:w-7 flex-none items-center justify-center rounded-full border-2 border-black shadow-[2px_2px_0_rgba(0,0,0,1)]"
           >
             <img
-                src="/icon/arrow-next.svg"
+                src="/icon/arrow-search.svg"
                 alt="arrow"
                 className="h-4 w-4"
               />

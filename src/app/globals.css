@@ -62,3 +62,8 @@ a {
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
+.image-pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}

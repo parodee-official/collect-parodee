@@ -65,12 +65,12 @@ function AttributeSelectorCard({
                   className="group cursor-pointer"
                 >
                   <div className="flex items-center justify-between pb-2">
-                    <span className={`${isSelected ? "font-bold text-white" : "font-medium text-white"}`}>
+                    <span className={`${isSelected ? "font-bold text-white " : "font-medium text-white group-hover:text-[#404040]"}`}>
                       {val}
                     </span>
                     {isSelected && <span className="text-sm font-bold text-whi">✓</span>}
                   </div>
-                  <div className="h-[2px] w-full bg-[#9D9D9D] group-hover:bg-black transition-colors" />
+                  <div className="h-[2px] w-full bg-[#9D9D9D]  transition-colors" />
                 </div>
               );
             })
@@ -129,7 +129,7 @@ function SidebarContent({
                 className={`
                   relative z-10 w-full px-4 py-3 text-sm text-white font-black transition-all duration-100 flex items-center justify-center
                   border-4 border-black bg-[#5A5A5A]
-                  ${isActive ? "rounded-t-2xl border-b-0" : "rounded-2xl hover:bg-[#FFEC40]"}
+                  ${isActive ? "rounded-t-2xl border-b-0" : "rounded-2xl hover:bg-[#FFEC40] hover:text-[#000]"}
                   ${hasActiveFilter && !isActive ? "bg-gray-100" : ""}
                 `}
               >
@@ -193,7 +193,7 @@ export function MobileFilterSidebar({
       <div
         className="
           absolute left-0 top-0 h-full w-[60%] max-w-sm
-          bg-white border-[4px] border-black border-l-0 rounded-r-[32px]
+          bg-[#404040] border-[4px] border-black border-l-0 rounded-r-[32px]
 
           p-6
           shadow-cartoonTwo

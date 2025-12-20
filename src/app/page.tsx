@@ -1,26 +1,121 @@
+import Link from "next/link";
+import pixelchaos from "@/data/pixelchaos.json";
+import hyperevm from "@/data/hyperevm.json";
+
+type CollectionItem = {
+  identifier: string
+  image_url: string
+}
+
 type Collection = {
   id: number
   title: string
+  slug: string
   description: string
-  items: string[]
+  items: CollectionItem[]
 }
 
-const collections: Collection[] = [
-  {
-    id: 1,
-    title: 'Parodee : Pixel Chaos',
-    description:
-      'A curated chaos of pixel characters, each one crafted with unique personality and on-chain identity.',
-    items: ['1', '2', '3', '4'],
-  },
-  {
-    id: 2,
-    title: 'Parodee : First Gen',
-    description:
-      'The genesis collection of Parodee. Original characters, original story, pure on-chain culture.',
-    items: ['1', '2', '3', '4'],
-  },
-]
+
+const pixelChaos = {
+  slug: "parodee-pixel-chaos",
+  title: "Parodee : Pixel Chaos",
+  description:
+    "A curated chaos of pixel characters, each one crafted with unique personality and on-chain identity.",
+  items: pixelchaos,
+}
+
+const hyperEvm = {
+  slug: "parodee-hyperevm",
+  title: "Parodee : HyperEVM",
+  description:
+    "The genesis collection of Parodee. Original characters, original story, pure on-chain culture.",
+  items: hyperevm,
+}
+
+function CollectionSection({
+  title,
+  description,
+  slug,
+  items,
+}: {
+  title: string
+  description: string
+  slug: string
+  items: CollectionItem[]
+}) {
+  return (
+    <section
+      className="
+        flex flex-col-reverse md:flex-row
+        items-center
+        gap-6 md:gap-10
+        rounded-3xl
+        bg-[#292929]
+        p-8
+        border-4 border-black
+        shadow-cartoonTwo
+      "
+    >
+      {/* LEFT */}
+      <div className="flex-1 text-center md:text-left">
+        <h3 className="text-xl md:text-4xl font-extrabold mb-3">
+          {title}
+        </h3>
+
+        <p className="text-sm md:text-[16px] text-zinc-300 leading-relaxed max-w-xl mx-auto md:mx-0 mb-6">
+          {description}
+        </p>
+
+        <Link href={`/collect/items?slug=${slug}`}>
+          <button
+            className="
+              inline-flex
+              w-full
+              rounded-xl
+              bg-brand-yellow
+              px-6 py-3
+              font-black
+              text-black
+              border-4 border-black
+              hover:bg-yellow-300
+              transition
+              justify-center
+               hover:-translate-x-0.5 hover:-translate-y-0.5
+            "
+          >
+            DISCOVER COLLECTION
+          </button>
+        </Link>
+      </div>
+
+      {/* RIGHT */}
+      <div className="grid grid-cols-2 gap-3 md:gap-4 shrink-0">
+        {items.slice(0, 4).map((item) => (
+          <div
+            key={item.identifier}
+            className="
+              h-24 w-24
+              md:h-36 md:w-36
+              rounded-2xl
+              overflow-hidden
+              bg-zinc-700
+              border-4 border-black
+              shadow-[3px_3px_0_rgba(0,0,0,1)]
+              md:shadow-[6px_6px_0_rgba(0,0,0,1)]
+              hover:translate-x-1 hover:translate-y-1 hover:shadow-none
+            "
+          >
+            <img
+              src={item.image_url}
+              alt={item.identifier}
+              className="h-full w-full object-cover image-pixelated "
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
 
 export default function Page() {
   return (
@@ -42,73 +137,10 @@ export default function Page() {
           </h2>
         </section>
 
-        {/* COLLECTION CARDS */}
+        {/* COLLECTIONS */}
         <section className="space-y-6 md:space-y-10">
-          {collections.map((collection) => (
-            <div
-              key={collection.id}
-              className="
-                flex flex-col-reverse md:flex-row
-                items-center
-                gap-6 md:gap-10
-                rounded-3xl
-                bg-[#292929]
-                p-5 md:p-8
-                border-4 border-black
-                shadow-cartoonTwo
-              "
-            >
-              {/* LEFT - TEXT */}
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-xl md:text-4xl font-extrabold mb-3">
-                  {collection.title}
-                </h3>
-
-                <p className="text-sm text-zinc-300 leading-relaxed max-w-xl mx-auto md:mx-0 mb-6">
-                  {collection.description}
-                </p>
-
-                <button
-                  className="
-                    inline-flex
-                    w-full
-                    rounded-xl
-                    bg-brand-yellow
-                    px-6 py-3
-                    font-bold
-                    text-black
-                    border-4 border-black
-                    hover:bg-yellow-300
-                    transition
-
-                    justify-center
-                  "
-                >
-                  DISCOVER COLLECTION
-                </button>
-              </div>
-
-              {/* RIGHT - NFT GRID */}
-              <div className="grid grid-cols-2 gap-3 md:gap-4 shrink-0">
-                {collection.items.map((_, i) => (
-                  <div
-                    key={i}
-                    className="
-                      h-24 w-24
-                      md:h-36 md:w-36
-                      rounded-2xl
-                      bg-zinc-700
-                      border-4 border-black
-                      flex items-center justify-center
-                      text-xs text-zinc-300
-                    "
-                  >
-                    NFT
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+          <CollectionSection {...pixelChaos} />
+          <CollectionSection {...hyperEvm} />
         </section>
 
       </div>

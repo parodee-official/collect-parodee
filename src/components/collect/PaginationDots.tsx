@@ -67,7 +67,7 @@ export default function PaginationDots({
         onClick={() => goTo(currentPage - 1)}
         disabled={currentPage === 1}
         className={[
-          "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black bg-white text-black text-sm font-bold transition-transform active:scale-95",
+          "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black bg-[#5A5A5A] text-black text-sm font-bold transition-transform active:scale-95",
           "shadow-[2px_2px_0px_#000000]",
           currentPage === 1 && "opacity-40 pointer-events-none",
         ]
@@ -96,7 +96,7 @@ export default function PaginationDots({
             className={[
               "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black text-xs font-bold transition-transform active:scale-95",
               "shadow-[2px_2px_0px_#000000]",
-              isActive ? "bg-brand-yellow" : "bg-white hover:bg-gray-50",
+              isActive ? "bg-brand-yellow" : "bg-[#5A5A5A] hover:bg-[#FFEC40]",
             ]
               .filter(Boolean)
               .join(" ")}
@@ -113,7 +113,7 @@ export default function PaginationDots({
         onClick={() => goTo(currentPage + 1)}
         disabled={currentPage === totalPages}
         className={[
-          "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black bg-white text-sm font-bold transition-transform active:scale-95",
+          "flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-black bg-[#5A5A5A] text-sm font-bold transition-transform active:scale-95",
           "shadow-[2px_2px_0px_#000000]",
           currentPage === totalPages && "opacity-40 pointer-events-none",
         ]

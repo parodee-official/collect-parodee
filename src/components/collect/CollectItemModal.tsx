@@ -198,7 +198,7 @@ export default function CollectItemModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-3 sm:px-4">
       {/* CARD MODAL */}
-      <div className="flex w-full max-w-2xl flex-col min-h-[70vh] sm:min-h-[300px] md:min-h-[350px] max-h-[70vh] md:max-h-[500px] rounded-[24px] border-[3px] border-black bg-brand-seccond text-[#B6B6B6] p-4 sm:p-6 shadow-cartoon">
+      <div className="flex w-full max-w-2xl flex-col min-h-[70vh] sm:min-h-[300px] md:min-h-[350px] max-h-[70vh] md:max-h-[500px] rounded-[24px] border-[3px] border-black bg-brand-seccond text-white p-4 sm:p-6 shadow-cartoon">
 
          {/* ===== HEADER Desktop ===== */}
         <div className="mb-6 hidden sm:flex flex-none items-start gap-6">
@@ -213,15 +213,15 @@ export default function CollectItemModal({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-4 mb-1">
               <h2 className="text-[40px] font-black leading-tight tracking-tight">{displayName}</h2>
-              <button onClick={onClose} className="w-9 h-9 rounded-lg border-[3px] border-black bg-[#FF6467] font-black shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none">✕</button>
+              <button onClick={onClose} className="w-9 h-9 rounded-lg border-[3px] border-black bg-[#FF6467] font-black text-black shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none">✕</button>
             </div>
-            <div className="text-xs md:text-[13px] text-gray-700 max-h-[55px] md:max-h-[60px] overflow-y-auto pr-3 mb-4 custom-scrollbar">
+            <div className="text-xs md:text-[13px] text-[#B6B6B6] max-h-[55px] md:max-h-[60px] overflow-y-auto pr-3 mb-4 custom-scrollbar">
               {displayItem.description}
             </div>
-            <p className="text-xl mb-3"><span className="font-bold text-[#636363]">Price:</span> <span className="font-black">{displayPrice}</span></p>
+            <p className="text-xl mb-3"><span className="font-bold ">Price:</span> <span className="font-black text-[#FFEC40]">{displayPrice}</span></p>
             <div className="flex w-full gap-3">
-              <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center rounded-xl border-2 border-black bg-white px-6 py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">NEW BID</a>
-              <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center rounded-xl border-2 border-black bg-brand-yellow px-6 py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">BUY NOW</a>
+              <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center rounded-xl border-2 border-black bg-[#5A5A5A] px-6 py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">NEW BID</a>
+              <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center rounded-xl border-2 border-black bg-brand-yellow text-black px-6 py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">BUY NOW</a>
             </div>
           </div>
         </div>
@@ -236,20 +236,20 @@ export default function CollectItemModal({
           <div className="flex flex-col min-w-0">
             <div className="flex justify-between items-start mb-2 gap-3">
               <h2 className="text-[22px] font-black leading-tight">{displayName}</h2>
-              <button onClick={onClose} className="w-7 h-7 rounded-lg border-[3px] border-black bg-[#FF6467] font-black shadow-[2px_2px_0px_#000000] items-end active:translate-x-1 active:translate-y-1 active:shadow-none">✕</button>
+              <button onClick={onClose} className="w-7 h-7 rounded-lg border-[3px] border-black bg-[#FF6467] text-black font-black shadow-[2px_2px_0px_#000000] items-end active:translate-x-1 active:translate-y-1 active:shadow-none">✕</button>
             </div>
-            <div className="text-xs text-gray-700 max-h-[55px] overflow-y-auto mb-2">{displayItem.description}</div>
-            <p className="text-md mb-2"><span className="font-bold text-[#636363]">Price:</span> <span className="font-black">{displayPrice}</span></p>
+            <div className="text-xs text-[#B6B6B6] max-h-[55px] overflow-y-auto mb-2">{displayItem.description}</div>
+            <p className="text-md mb-2"><span className="font-bold ">Price:</span> <span className="font-black text-[#FFEC40]">{displayPrice}</span></p>
           </div>
-          <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center rounded-xl border-2 border-black bg-white py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">NEW BID</a>
-          <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center rounded-xl border-2 border-black bg-brand-yellow py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">BUY NOW</a>
+          <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center rounded-xl border-2 border-black bg-[#5A5A5A] py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">NEW BID</a>
+          <a href={`https://opensea.io/assets/${displayItem.chain || "ethereum"}/${finalContractAddress}/${displayItem.identifier}`} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center rounded-xl border-2 border-black bg-brand-yellow text-black py-2 text-[11px] font-black uppercase shadow-[2px_2px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">BUY NOW</a>
         </div>
 
         {/* LOWER CARD: Tabs + Content */}
         <div className="flex-1 overflow-y-auto rounded-[24px] border-[3px] border-black shadow-cartoonTwo bg-[#5A5A5A] p-3 sm:p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="mb-4 flex gap-4 text-[11px] sm:text-xs">
             {DETAIL_TABS.map((tab) => (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`border-b-2 pb-1 transition-colors ${activeTab === tab.id ? "border-black font-semibold" : "border-transparent text-gray-500 hover:text-black"}`}>{tab.label}</button>
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`pb-1 transition-colors ${activeTab === tab.id ? "border-black font-semibold" : "border-transparent text-[#A9A9A9] hover:text-black"}`}>{tab.label}</button>
             ))}
           </div>
 
@@ -261,8 +261,8 @@ export default function CollectItemModal({
                 ) : (
                 <div className="flex flex-wrap gap-2 text-[10px] sm:text-[11px]">
                   {traits.map((trait: any, idx: number) => (
-                    <div key={idx} className="rounded-xl border-2 border-black bg-white px-3 py-1 shadow-cartoonTwo active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">
-                      <div className="text-[8px] uppercase text-gray-500 sm:text-[9px]">{trait.trait_type}</div>
+                    <div key={idx} className="rounded-xl border-2 border-black bg-[#7F7F7F] px-3 py-1 shadow-cartoonTwo active:translate-x-1 active:translate-y-1 active:shadow-none hover:-translate-x-0.5 hover:-translate-y-0.5">
+                      <div className="text-[8px] uppercase text-white sm:text-[9px]">{trait.trait_type}</div>
                       <div className="text-[10px] font-semibold sm:text-[11px]">{trait.value}</div>
                       {trait.rarity_score && (<div className="mt-3 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden"><div className="bg-black h-full rounded-full" style={{width: `${Math.min(trait.rarity_score, 100)}%`}} /></div>)}
                     </div>

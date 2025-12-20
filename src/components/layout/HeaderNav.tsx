@@ -17,8 +17,17 @@ export default function Navbar() {
   { label: 'HyperEVM', slug: 'parodee-hyperevm' },
 ]
 
+const getCollectBasePath = () => {
+  if (pathname.startsWith("/collect/about")) return "/collect/about"
+  if (pathname.startsWith("/collect/dashboard")) return "/collect/dashboard"
+  if (pathname.startsWith("/collect/items")) return "/collect/items"
+
+  // fallback kalau masih di /collect
+  return "/collect/items"
+}
+
   return (
-    <nav className="w-full bg-brand-main border-b px-4 md:px-8 border-[#1E1E1E]">
+    <nav className="w-full bg-brand-main border-b px-4 py-2 md:pt-6 md:px-8 border-[#1E1E1E]">
       <div className="mx-auto max-w-6xl px-4 md:px-8">
         <div className="flex h-16 items-center justify-between">
 
@@ -55,7 +64,8 @@ export default function Navbar() {
               collectMenuOptions.map((option) => (
                 <Link
                   key={option.slug}
-                  href={`/collect/items?slug=${option.slug}`}
+                  // href={`/collect/items?slug=${option.slug}`}
+                  href={`${getCollectBasePath()}?slug=${option.slug}`}
                   className="hover:text-white transition"
                 >
                   {option.label}
@@ -97,7 +107,8 @@ export default function Navbar() {
               collectMenuOptions.map((option) => (
                 <Link
                   key={option.slug}
-                  href={`/collect?slug=${option.slug}`}
+                  href={`${getCollectBasePath()}?slug=${option.slug}`}
+                  // href={`/collect?slug=${option.slug}`}
                   className="py-2"
                 >
                   {option.label}
