@@ -67,7 +67,7 @@ export default function CollectToolbar({
         </div>
       </div>
 
-      {/* Sort icons kotak bulat segitiga
+      {/* Sort icons kotak bulat segitiga */}
       <div className="ml-2 md:ml-5 flex flex-none items-center gap-2 md:gap-3 pt-1 sm:pt-0">
 
 
@@ -127,7 +127,7 @@ export default function CollectToolbar({
         </button>
 
 
-      </div>*/}
+      </div>
     </div>
   );
 }

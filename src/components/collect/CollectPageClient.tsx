@@ -45,13 +45,11 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
   const [history, setHistory] = useState<any[]>([]);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-{/*
   // State Sort
   const [sortMode, setSortMode] = useState<SortMode>("featured");
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const [sortOption, setSortOption] = useState<SortOptionId>("best-offer");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
-*/}
   // 2. Extract Traits dari JSON Lokal (key: 'attributes')
   const availableTraits = useMemo(() => {
     const traitsMap: Record<string, Set<string>> = {};
@@ -127,7 +125,6 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
         });
       });
     }
-    /*}
     // Sort
     if (sortMode === "newest") {
        result.sort((a, b) => parseInt(b.identifier) - parseInt(a.identifier));
@@ -140,7 +137,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
 
 
     if (sortDirection === "desc") result.reverse();
-  */
+
     return result;
   }, [items, search, selectedAttributes]);
 
@@ -193,13 +190,11 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
       setIsLoadingDetail(false);
     }
   };
-  /*
   const applySortOption = (opt: SortOptionId) => {
     setSortOption(opt);
     setSortMode(opt === "best-offer" ? "featured" : opt === "rarity" ? "rarity" : "newest");
     setCurrentPage(1);
   };
-  */
   return (
     <section className="mt-4 md:mt-6">
       <div className="flex gap-10">
@@ -214,9 +209,9 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
             search={search}
             onSearchChange={(v) => { setSearch(v); setCurrentPage(1); }}
             onOpenFilter={() => setIsMobileFilterOpen(true)}
-            /*sortMode={sortMode}
+            sortMode={sortMode}
             onSortModeChange={(mode) => { setSortMode(mode); setCurrentPage(1); }}
-            onOpenSortMenu={() => setIsSortModalOpen(true)}*/
+            onOpenSortMenu={() => setIsSortModalOpen(true)}
           />
 
           <CollectGrid items={pageItems} onItemClick={handleOpenItem} />
@@ -245,7 +240,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
         isLoading={isLoadingDetail}
         onClose={() => setIsItemModalOpen(false)}
       />
-      {/*
+
       <SortModal
         open={isSortModalOpen}
         onClose={() => setIsSortModalOpen(false)}
@@ -254,7 +249,6 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
         onChangeOption={applySortOption}
         onChangeDirection={(dir) => { setSortDirection(dir); setCurrentPage(1); }}
       />
-      */}
-    </section>
+  </section>
   );
 }
