@@ -1,7 +1,8 @@
 // src/components/collect/SortModal.tsx
 "use client";
 
-export type SortOptionId = "best-offer" | "last-sale" | "rarity" | "time-listed";
+// Tambahkan 'price_asc' ke tipe ini
+export type SortOptionId = "best-offer" | "last-sale" | "rarity" | "time-listed" | "price_asc";
 export type SortDirection = "asc" | "desc";
 
 type SortModalProps = {
@@ -24,17 +25,17 @@ export default function SortModal({
   if (!open) return null;
 
   const options = [
-    { id: "best-offer", label: "Best offer" },
+    { id: "price_asc", label: "Best listing (Low Price)" }, // <--- FITUR BARU
+    //{ id: "best-offer", label: "Best offer" },
     { id: "last-sale", label: "Last sale" },
-    { id: "rarity", label: "Rarity" },
-    { id: "time-listed", label: "Time listed" },
+    //{ id: "rarity", label: "Rarity" }, // Rarity kita set sebagai default di tombol kotak
+    //{ id: "time-listed", label: "Time listed" },
   ] as const;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="relative w-full max-w-xs rounded-[24px] border-[3px] border-black bg-white px-8 py-10 md:py-12 shadow-cartoonTwo">
-
-        {/* 🔥 Close button floating di kanan atas */}
+        
         <button
           type="button"
           onClick={onClose}
@@ -66,10 +67,7 @@ export default function SortModal({
           <button
             type="button"
             onClick={() => onChangeDirection("asc")}
-            className={[
-              "flex-1 rounded-[12px] border-[3px] border-black px-4 py-2 text-sm font-semibold",
-              direction === "asc" ? "bg-brand-yellow" : "bg-white",
-            ].join(" ")}
+            className={`flex-1 rounded-[12px] border-[3px] border-black px-4 py-2 text-sm font-semibold ${direction === "asc" ? "bg-brand-yellow" : "bg-white"}`}
           >
             Asc
           </button>
@@ -77,10 +75,7 @@ export default function SortModal({
           <button
             type="button"
             onClick={() => onChangeDirection("desc")}
-            className={[
-              "flex-1 rounded-[12px] border-[3px] border-black px-4 py-2 text-sm font-semibold",
-              direction === "desc" ? "bg-brand-yellow" : "bg-white",
-            ].join(" ")}
+            className={`flex-1 rounded-[12px] border-[3px] border-black px-4 py-2 text-sm font-semibold ${direction === "desc" ? "bg-brand-yellow" : "bg-white"}`}
           >
             Desc
           </button>
