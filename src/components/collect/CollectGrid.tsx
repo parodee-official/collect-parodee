@@ -1,16 +1,22 @@
-// src/components/collect/CollectGrid.tsx
 "use client";
 
+import { ViewShape } from "./CollectToolbar"; // Import tipe
+
 type CollectGridProps = {
-  items: any[]; // NFT dari OpenSea
+  items: any[];
   onItemClick?: (item: any) => void;
+  viewShape?: ViewShape; // Prop baru untuk bentuk
 };
 
-
-export default function CollectGrid({ items, onItemClick }: CollectGridProps) {
+export default function CollectGrid({ items, onItemClick, viewShape = "square" }: CollectGridProps) {
   if (!items?.length) return null;
 
-  // console.log("NFT SAMPLE", items[0]);
+  // Tentukan class border radius berdasarkan viewShape
+  // Jika 'circle' -> rounded-full, Jika 'square' -> rounded biasa
+  const shapeClass = viewShape === "circle"
+    ? "rounded-full"
+    : "rounded-[18px] md:rounded-[24px]";
+
   return (
     <div className="grid grid-cols-4 gap-4 lg:grid-cols-5 sm:gap-5 md:gap-6">
       {items.map((nft: any) => {
@@ -22,14 +28,21 @@ export default function CollectGrid({ items, onItemClick }: CollectGridProps) {
             key={nft.identifier}
             aria-label={displayName}
             onClick={() => onItemClick?.(nft)}
-            className="
+            className={`
               relative flex aspect-square w-full cursor-pointer overflow-hidden
-              rounded-[18px]  md:rounded-[24px] border-[3px] md:border-[4px] border-black bg-white
+
+              ${shapeClass}
+
+              border-[3px] md:border-[4px] border-black bg-white
               shadow-[3px_3px_0_rgba(0,0,0,1)]
               md:shadow-[6px_6px_0_rgba(0,0,0,1)]
-              active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:translate-x-1 hover:translate-y-1 hover:shadow-none
+
+              active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
+              hover:translate-x-1 hover:translate-y-1 hover:shadow-none
               focus:outline-none
-            "
+
+              transition-all duration-500 ease-in-out
+            `}
           >
             {imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element

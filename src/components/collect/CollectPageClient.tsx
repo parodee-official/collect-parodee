@@ -1,38 +1,37 @@
-// src/components/collect/CollectPageClient.tsx
 "use client";
 
 import { useMemo, useState } from "react";
-import CollectToolbar, { SortMode } from "@/components/collect/CollectToolbar";
+// Import ViewShape dari Toolbar
+import CollectToolbar, { ViewShape } from "@/components/collect/CollectToolbar";
 import CollectGrid from "@/components/collect/CollectGrid";
 import PaginationDots from "@/components/collect/PaginationDots";
 import CollectItemModal from "@/components/collect/CollectItemModal";
 import FilterSidebar, { MobileFilterSidebar } from "@/components/collect/FilterSidebar";
+// Pastikan SortModal diimport
 import SortModal, { SortDirection, SortOptionId } from "@/components/collect/SortModal";
 import { getNFTEventsAction } from "@/app/actions/nftActions";
 
 const ITEMS_PER_PAGE = 25;
 
-// [PENTING] Masukkan Contract Address Collection Anda di sini
 const CONTRACTS: Record<string, string> = {
   "parodee-pixel-chaos": "0x9e1dadf6eb875cf927c85a430887f2945039f923",
   "parodee-hyperevm": "0x90df79459afc5fc58b7bfdca3c27c18b03a29d66",
 };
 const CHAINS: Record<string, string> = {
   "parodee-pixel-chaos": "ethereum",
-  "parodee-hyperevm": "hyperevm", // Slug khusus HyperEVM di OpenSea
+  "parodee-hyperevm": "hyperevm",
 };
 const ALLOWED_TRAIT_TYPES = ["Background", "Body", "Type", "Face", "Outfit"];
 
 type CollectPageClientProps = {
   initialItems: any[];
-  activeSlug: string; // <-- Tambahkan prop ini
+  activeSlug: string;
 };
 
 export default function CollectPageClient({ initialItems, activeSlug }: CollectPageClientProps) {
-  //kalo slug nggak ada di CONTRACTS, default ke pixel-chaos
   const currentContract = CONTRACTS[activeSlug] || CONTRACTS["parodee-pixel-chaos"];
-  const currentChain = CHAINS[activeSlug] || "ethereum"; // Default ke ethereum
-  // 1. Data langsung pakai dari props (JSON Lokal), tidak perlu state 'items' tambahan
+  const currentChain = CHAINS[activeSlug] || "ethereum";
+
   const items = initialItems;
 
   const [search, setSearch] = useState("");
@@ -40,39 +39,39 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string[]>>({});
 
-  // State Modal
+  // State Modal Detail Item
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  // State Sort
-  const [sortMode, setSortMode] = useState<SortMode>("featured");
+
+  // --- STATE TAMPILAN (Kotak vs Bulat) ---
+  const [viewShape, setViewShape] = useState<ViewShape>("square");
+
+  // --- STATE SORTING (Untuk Tombol Segitiga) ---
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+  // Default sort option
   const [sortOption, setSortOption] = useState<SortOptionId>("best-offer");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
-  // 2. Extract Traits dari JSON Lokal (key: 'attributes')
+
+  // Extract Traits
   const availableTraits = useMemo(() => {
     const traitsMap: Record<string, Set<string>> = {};
-
     for (const item of items) {
-      const rawTraits = item.attributes || []; // <-- Pakai attributes
+      const rawTraits = item.attributes || [];
       if (!Array.isArray(rawTraits)) continue;
 
       for (const t of rawTraits) {
-        const traitType = t.trait_type; // <-- Pakai trait_type
+        const traitType = t.trait_type;
         if (!traitType) continue;
 
         const normalizedType = String(traitType).charAt(0).toUpperCase() + String(traitType).slice(1);
-
         if (ALLOWED_TRAIT_TYPES.includes(normalizedType)) {
-          if (!traitsMap[normalizedType]) {
-            traitsMap[normalizedType] = new Set();
-          }
+          if (!traitsMap[normalizedType]) traitsMap[normalizedType] = new Set();
           traitsMap[normalizedType].add(String(t.value));
         }
       }
     }
-
     const result: Record<string, string[]> = {};
     for (const key in traitsMap) {
       result[key] = Array.from(traitsMap[key]).sort();
@@ -80,70 +79,61 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     return result;
   }, [items]);
 
-  // 3. Filter Logic
+  // Filter & Sort Logic
   const filtered = useMemo(() => {
     let result = [...items];
 
-    // Search
+    // 1. Search Logic
     const q = search.trim().toLowerCase();
     if (q) {
       result = result.filter((item: any) => {
-        // 1. Cek Nama Item
         const name = (item.name ?? "").toLowerCase();
-
-        // 2. Cek Identifier (Token ID)
         const id = String(item.identifier ?? "").toLowerCase();
-
-        // 3. Cek Attributes (Traits)
         const attributes = item.attributes || [];
-        // .some() akan return true jika ada MINIMAL SATU attribute yang cocok
         const hasMatchingAttribute = attributes.some((t: any) => {
           const traitValue = String(t.value ?? "").toLowerCase();
           const traitType = String(t.trait_type ?? "").toLowerCase();
-
-          // Cek apakah search query ada di value (misal: "Red")
-          // atau di tipe traitnya (misal: "Background")
           return traitValue.includes(q) || traitType.includes(q);
         });
-
-        // Return true jika salah satu kondisi terpenuhi
         return name.includes(q) || id.includes(q) || hasMatchingAttribute;
       });
     }
 
-    // Attributes Filter
+    // 2. Attributes Filter
     if (Object.keys(selectedAttributes).length > 0) {
       result = result.filter((item: any) => {
-        const itemTraits = item.attributes || []; // <-- Pakai attributes
+        const itemTraits = item.attributes || [];
         return Object.entries(selectedAttributes).every(([filterCategory, filterValues]) => {
           if (filterValues.length === 0) return true;
           return itemTraits.some((t: any) => {
-            const tType = t.trait_type; // <-- Pakai trait_type
+            const tType = t.trait_type;
             const normType = String(tType).charAt(0).toUpperCase() + String(tType).slice(1);
             return normType === filterCategory && filterValues.includes(String(t.value));
           });
         });
       });
     }
-    // Sort
-    if (sortMode === "newest") {
+
+    // 3. Sorting Logic
+    // [FIX] Gunakan (sortOption as string) untuk menghindari Type Error jika 'newest' tidak ada di definisi type
+    const currentSort = sortOption as string;
+
+    if (currentSort === "newest" || currentSort === "recently_listed") {
+       // Contoh: ID Descending (Item baru biasanya ID lebih besar)
        result.sort((a, b) => parseInt(b.identifier) - parseInt(a.identifier));
-    } else if (sortMode === "rarity") {
-       result.sort((a, b) => String(b.name ?? "").localeCompare(String(a.name ?? "")));
+    } else if (currentSort === "rarity" || currentSort.includes("rarity")) {
+       // Contoh: Name Alphabetical atau logic Rarity Anda
+       result.sort((a, b) => String(a.name ?? "").localeCompare(String(b.name ?? "")));
     } else {
-       // Featured / Default: Sort by ID Ascending
+       // Default / Best Offer: ID Ascending
        result.sort((a, b) => parseInt(a.identifier) - parseInt(b.identifier));
     }
 
-
+    // Handle Direction (Asc/Desc)
     if (sortDirection === "desc") result.reverse();
 
     return result;
-  }, [items, search, selectedAttributes]);
-
-
-
-  /*[items, search, sortMode, sortDirection, selectedAttributes]);*/
+  }, [items, search, selectedAttributes, sortOption, sortDirection]);
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
@@ -173,14 +163,11 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     setIsLoadingDetail(true);
 
     try {
-      // 4. Update Action Call: Gunakan 'currentChain' (hyperevm/ethereum)
-      // Ini penting agar API OpenSea mencari di network yang benar
       const historyData = await getNFTEventsAction(
-          currentChain, // <-- GANTI CONSTANT JADI VARIABLE
+          currentChain,
           currentContract,
           item.identifier
       );
-
       if (historyData && historyData.asset_events) {
           setHistory(historyData.asset_events);
       }
@@ -190,11 +177,13 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
       setIsLoadingDetail(false);
     }
   };
+
+  // Fungsi saat user memilih opsi di SortModal
   const applySortOption = (opt: SortOptionId) => {
     setSortOption(opt);
-    setSortMode(opt === "best-offer" ? "featured" : opt === "rarity" ? "rarity" : "newest");
     setCurrentPage(1);
   };
+
   return (
     <section className="mt-4 md:mt-6">
       <div className="flex gap-10">
@@ -209,12 +198,20 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
             search={search}
             onSearchChange={(v) => { setSearch(v); setCurrentPage(1); }}
             onOpenFilter={() => setIsMobileFilterOpen(true)}
-            sortMode={sortMode}
-            onSortModeChange={(mode) => { setSortMode(mode); setCurrentPage(1); }}
+
+            // --- Props Tampilan (Kotak/Bulat) ---
+            viewShape={viewShape}
+            onViewShapeChange={setViewShape}
+
+            // --- Props Sorting (Segitiga) ---
             onOpenSortMenu={() => setIsSortModalOpen(true)}
           />
 
-          <CollectGrid items={pageItems} onItemClick={handleOpenItem} />
+          <CollectGrid
+            items={pageItems}
+            onItemClick={handleOpenItem}
+            viewShape={viewShape} // <-- Grid menerima bentuk di sini
+          />
 
           <PaginationDots currentPage={safePage} totalPages={totalPages} onChange={setCurrentPage} />
         </div>
@@ -234,13 +231,14 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
         detail={{
             ...selectedItem,
             contract: currentContract,
-            chain: currentChain  // <-- INI KUNCINYA
+            chain: currentChain
         }}
         history={history}
         isLoading={isLoadingDetail}
         onClose={() => setIsItemModalOpen(false)}
       />
 
+      {/* Modal Sorting */}
       <SortModal
         open={isSortModalOpen}
         onClose={() => setIsSortModalOpen(false)}
@@ -249,6 +247,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
         onChangeOption={applySortOption}
         onChangeDirection={(dir) => { setSortDirection(dir); setCurrentPage(1); }}
       />
-  </section>
+
+    </section>
   );
 }
