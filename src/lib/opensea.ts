@@ -57,7 +57,7 @@ export const openSeaClient = {
     return _fetchOpenSea(
       `/events/chain/${chain}/contract/${address}/nfts/${identifier}?limit=20`,
       {
-        next: { revalidate: 0 }, 
+        next: { revalidate: 0 },
         cache: 'no-store'
       }
     );
@@ -74,8 +74,9 @@ export const openSeaClient = {
     return _fetchOpenSea(
       `/orders/${chain}/${protocol}/offers?asset_contract_address=${address}&token_ids=${identifier}&order_by=eth_price&order_direction=desc`,
       {
-        next: { revalidate: 60 }, 
+        next: { revalidate: 60 },
       }
     );
   },
+
 };

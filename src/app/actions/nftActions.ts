@@ -1,4 +1,4 @@
-"use server"; 
+"use server";
 
 import { openSeaClient } from "@/lib/opensea";
 
@@ -60,17 +60,17 @@ export async function getMarketDataAction(
 ) {
   try {
     let items: any[] = [];
-    const CACHE_TIME = 60; 
-    const LIMIT = 50; 
+    const CACHE_TIME = 60;
+    const LIMIT = 50;
 
     // --- A. BEST LISTING (Price Low to High) ---
     if (sortOption === "price_asc") {
       // [FIX] Gunakan Endpoint 'Listings Collection' yang khusus
       // Endpoint ini otomatis mengurutkan dari harga terendah (Floor)
       const url = `/listings/collection/${slug}/all?limit=${LIMIT}`;
-      
+
       console.log(`[Server] Fetching Listings: ${url}`);
-      
+
       const data = await openSeaClient.fetchOpenSea(url, { next: { revalidate: CACHE_TIME } });
 
       if (data && data.listings) {
@@ -82,14 +82,14 @@ export async function getMarketDataAction(
     else if (sortOption === "last-sale") {
       const url = `/events/collection/${slug}?event_type=sale&limit=${LIMIT}`;
       const data = await openSeaClient.fetchOpenSea(url, { next: { revalidate: CACHE_TIME } });
-      
+
       if (data && data.asset_events) {
          items = data.asset_events.map((e:any) => {
              const price = e.payment ? (parseInt(e.payment.quantity)/Math.pow(10, e.payment.decimals)) : 0;
              return {
                  identifier: e.nft.identifier,
                  display_price: `Sold: ${price.toFixed(4)} ETH`,
-                 contract: e.contract, 
+                 contract: e.contract,
                  chain: chain
              };
          });
@@ -100,11 +100,11 @@ export async function getMarketDataAction(
     else if (sortOption === "best-offer") {
       // [FIX] Gunakan Endpoint 'Offers Collection' yang khusus
       const url = `/offers/collection/${slug}/all?limit=${LIMIT}`;
-      
+
       console.log(`[Server] Fetching Offers: ${url}`);
 
       const data = await openSeaClient.fetchOpenSea(url, { next: { revalidate: CACHE_TIME } });
-      
+
       if (data && data.offers) {
          items = data.offers.map((o:any) => normalizeCollectionOffers(o, chain));
       }
@@ -113,7 +113,7 @@ export async function getMarketDataAction(
     // Filter null & Unique
     const validItems = items.filter(i => i !== null);
     const uniqueItems = Array.from(new Map(validItems.map(item => [item.identifier, item])).values());
-    
+
     return { items: uniqueItems };
 
   } catch (error) {
@@ -132,11 +132,11 @@ function normalizeCollectionListings(listing: any, chain: string) {
     // Struktur data endpoint ini berbeda, token ID ada di dalam protocol_data
     const params = listing.protocol_data?.parameters;
     const offerItem = params?.offer?.[0]; // Item yang dijual
-    
+
     if (!offerItem) return null;
 
     const tokenId = offerItem.identifierOrCriteria;
-    
+
     // Harga ada di listing.price.current
     const priceData = listing.price?.current;
     let priceVal = 0;
@@ -159,12 +159,12 @@ function normalizeCollectionListings(listing: any, chain: string) {
 function normalizeCollectionOffers(offer: any, chain: string) {
   try {
     const params = offer.protocol_data?.parameters;
-    
+
     // Di endpoint Offer, 'consideration' adalah item yang diminta (NFT kita)
     // NAMUN, Collection Offer biasanya tidak punya Token ID spesifik (Criteria based).
     // Jika ini adalah Item Offer spesifik, token ID ada di criteria.
     // Jika ini Collection Offer, token ID mungkin tidak ada (semua item).
-    
+
     // KITA CARI OFFER YANG PUNYA TOKEN ID SPESIFIK SAJA (Item Offer)
     const considerationItem = params?.consideration?.[0];
     if (!considerationItem) return null;
