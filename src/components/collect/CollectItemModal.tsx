@@ -176,24 +176,139 @@ export default function CollectItemModal({
     }
   };
 
-  const getBadgeStyle = (eventType: string) => {
-    const type = (eventType || "").toLowerCase();
-    if (type === 'sale' || type === 'mint' || type === 'item_listed') return 'bg-[#5efc8d]';
-    if (type === 'listing' || type === 'list' || type === 'order' || type === 'created') return 'bg-[#ff7676]';
-    if (type === 'bid' || type === 'offer_entered') return 'bg-[#5ce1ff]';
-    if (type === 'cancel' || type === 'cancelled') return 'bg-[#d1d5db]';
-    if (type === 'transfer') return 'bg-[#c084fc]';
-    return 'bg-gray-200';
-  };
+  // Helper cek null address (0x000...)
+  const isNullAddress = (addr: string) => /^0x0+$/.test(addr || "");
 
-  const getBadgeLabel = (eventType: string) => {
-    const type = (eventType || "").toLowerCase();
-    if (type === 'offer_entered') return 'BID';
-    if (type === 'cancelled' || type === 'cancel') return 'CANCEL';
-    if (type === 'listing' || type === 'list' || type === 'order' || type === 'created') return 'LIST';
-    if (type === 'mint') return 'MINT';
+  const getBadgeStyle = (event: any) => {
+    if (!event) return 'bg-[#D3D3D3] border-black text-black'; // Default
+
+    // 1. Normalisasi Data Dasar
+    const type = (event.event_type || event.type || "").toString().toLowerCase();
+    const fromAddr = event.from_address || event.maker || event.offerer || "";
+
+    // 2. CONVERT SEMUA DATA JADI STRING (Deep Search)
+    // Kita ubah seluruh object event menjadi teks panjang biar bisa dicarikan kata kuncinya
+    const rawDataString = JSON.stringify(event).toLowerCase();
+
+    // --- LOGIC WARNA ---
+
+    // A. MINT (Hijau)
+    // Cek mint dulu karena ini paling spesifik
+    if (type === 'mint' || (type === 'transfer' && isNullAddress(fromAddr))) {
+      return 'bg-[#66FF66] border-black border text-black';
+    }
+
+    // B. SALE (Hijau)
+    if (type === 'sale' || type === 'item_sold' || type === 'sales') {
+      return 'bg-[#66FF66] border-black border text-black';
+    }
+
+    // C. OFFER / BID (Biru Cyan) - CEK PALING AGRESIF
+    // Cari kata "offer" atau "bid" di SELURUH object data.
+    // Ini akan menangkap 'order_type': 'offer', 'side': 'offer', atau label apapun.
+    if (type === 'bid' ||
+        rawDataString.includes('"order_type":"offer"') || // Cek spesifik JSON key
+        rawDataString.includes('"side":"offer"') ||       // Cek spesifik JSON key
+        rawDataString.includes('"side":"bid"') ||         // Cek spesifik JSON key
+        type.includes('offer') // Cek di type
+        ) {
+      return 'bg-[#66FFFF] border-black border text-black';
+    }
+
+    // Fallback: Jika di string ada kata 'item offer' (seperti di screenshot)
+    if (rawDataString.includes('item offer') || rawDataString.includes('offer entered')) {
+         return 'bg-[#66FFFF] border-black border text-black';
+    }
+
+    // D. LISTING (Merah Salmon)
+    // Jika type listing, ATAU type order tapi mengandung kata 'listing'/'ask'
+    if (type === 'listing' ||
+        type === 'item_listed' ||
+        type === 'list' ||
+        type === 'created' ||
+        rawDataString.includes('"order_type":"listing"') ||
+        rawDataString.includes('"side":"ask"') ||
+        rawDataString.includes('"side":"sell"')
+       ) {
+      return 'bg-[#FF6666] border-black border text-black';
+    }
+
+    // E. ORDER (Handling Order Generik)
+    // Kalau lolos dari Offer dan Listing di atas, tapi typenya masih 'order'
+    if (type === 'order') {
+        // Cek Payment Token:
+        // WETH (Wrapped Ether) biasanya untuk OFFER.
+        // ETH (Native) biasanya untuk LISTING.
+        if (rawDataString.includes('weth') || rawDataString.includes('wrapped ether')) {
+             return 'bg-[#66FFFF] border-black border text-black'; // Asumsi Offer karena pakai WETH
+        }
+
+        // Kalau tidak ada petunjuk lain, anggap Listing (karena listing lebih umum daripada offer di feed)
+        return 'bg-[#FF6666] border-black border text-black';
+    }
+
+    // F. OTHER
+    if (type === 'cancel' || type === 'cancelled') return 'bg-[#D3D3D3] border-black border text-black';
+    if (type === 'transfer') return 'bg-[#D3D3D3] border-black border text-black';
+
+    return 'bg-[#D3D3D3] border-black border text-black';
+};
+
+const getBadgeLabel = (event: any) => {
+    if (!event) return '-';
+
+    const type = (event.event_type || event.type || "").toString().toLowerCase();
+    const fromAddr = event.from_address || event.maker || event.offerer || "";
+    const rawDataString = JSON.stringify(event).toLowerCase();
+
+    // 1. MINT
+    if (type === 'mint' || (type === 'transfer' && isNullAddress(fromAddr))) return 'MINT';
+
+    // 2. SALE
+    if (type === 'sale' || type === 'item_sold' || type === 'sales') return 'SALE';
+
+    // 3. OFFER / BID
+    if (type === 'bid' ||
+        rawDataString.includes('"order_type":"offer"') ||
+        rawDataString.includes('"side":"offer"') ||
+        rawDataString.includes('"side":"bid"') ||
+        rawDataString.includes('item offer') ||
+        type.includes('offer')) {
+
+        // Pembedaan Label
+        if (type === 'bid' || rawDataString.includes('"side":"bid"')) return 'BID';
+        return 'OFFER';
+    }
+
+    // 4. LISTING
+    if (type === 'listing' ||
+        type === 'item_listed' ||
+        type === 'list' ||
+        type === 'created' ||
+        rawDataString.includes('"order_type":"listing"') ||
+        rawDataString.includes('"side":"ask"')) {
+        return 'LIST';
+    }
+
+    // 5. ORDER FALLBACK
+    if (type === 'order') {
+        // Asumsi logic WETH
+        if (rawDataString.includes('weth') || rawDataString.includes('wrapped ether')) {
+             return 'OFFER';
+        }
+        return 'LIST'; // Default listing
+    }
+
+    // 6. CANCEL
+    if (type === 'cancel' || type === 'cancelled') {
+        if (rawDataString.includes('offer') || rawDataString.includes('bid')) return 'CANCEL BID';
+        return 'CANCEL LIST';
+    }
+
+    if (type === 'transfer') return 'TRANSFER';
+
     return type.toUpperCase();
-  };
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-3 sm:px-4">
@@ -236,7 +351,7 @@ export default function CollectItemModal({
           <div className="flex flex-col min-w-0">
             <div className="flex justify-between items-start mb-2 gap-3">
               <h2 className="text-[22px] font-black leading-tight">{displayName}</h2>
-              <button onClick={onClose} className="w-7 h-7 rounded-lg border-[3px] border-black bg-[#FF6467] text-black font-black shadow-[2px_2px_0px_#000000] items-end active:translate-x-1 active:translate-y-1 active:shadow-none">✕</button>
+              <button onClick={onClose} className="w-8 h-8 rounded-lg border-[3px] border-black bg-[#FF6467] text-black font-black shadow-[2px_2px_0px_#000000] items-end active:translate-x-1 active:translate-y-1 active:shadow-none">✕</button>
             </div>
             <div className="text-xs text-[#B6B6B6] max-h-[55px] overflow-y-auto mb-2">{displayItem.description}</div>
             <p className="text-md mb-2"><span className="font-bold ">Price:</span> <span className="font-black text-[#FFEC40]">{displayPrice}</span></p>
@@ -297,7 +412,7 @@ export default function CollectItemModal({
                           if (priceDisplay !== "—") priceDisplay = `${priceDisplay} ${symbol}`;
                           return (
                             <tr key={idx} className="border-b border-black/10">
-                              <td className="py-2 pr-4"><span className={`inline-flex items-center justify-center rounded-lg border-2 border-black px-3 py-[5px] text-[9px] font-black tracking-wide text-black ${getBadgeStyle(event.event_type)}`}>{getBadgeLabel(event.event_type)}</span></td>
+                              <td className="py-2 pr-4"><span className={`inline-flex items-center justify-center rounded-lg border-2 border-black px-3 py-[5px] text-[9px] font-black tracking-wide text-black ${getBadgeStyle(event)}`}>{getBadgeLabel(event)}</span></td>
                               <td className="py-2 pr-4">{shortenAddress(fromAddr)}</td>
                               <td className="py-2 pr-4">{shortenAddress(toAddr)}</td>
                               <td className="py-2 pr-4">{priceDisplay}</td>
