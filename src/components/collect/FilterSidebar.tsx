@@ -130,7 +130,7 @@ function SidebarContent({
                   relative z-10 w-full px-4 py-3 text-sm text-white font-black transition-all duration-100 flex items-center justify-center
                   border-[3px] md:border-4 border-black bg-[#5A5A5A]
                   ${isActive ? "rounded-t-2xl border-b-0 md:border-b-0" : "rounded-2xl hover:bg-[#FFEC40] hover:text-[#000]"}
-                  ${hasActiveFilter && !isActive ? "bg-gray-100" : ""}
+                  ${hasActiveFilter && !isActive ? "bg-[#FFEC40] text-[#000]" : ""}
                 `}
               >
                 <span className="capitalize">{key}</span>
