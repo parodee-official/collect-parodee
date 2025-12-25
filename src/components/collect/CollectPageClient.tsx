@@ -30,10 +30,9 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
   const currentContract = CONTRACTS[activeSlug] || CONTRACTS["parodee-pixel-chaos"];
   const currentChain = CHAINS[activeSlug] || "ethereum";
 
-  // Data Sumber (Local JSON) sebagai fallback metadata
   const localItems = initialItems;
 
-  // State Utama: displayItems (Isinya bisa data lokal atau hasil fetch server)
+  // --- STATE UTAMA ---
   const [displayItems, setDisplayItems] = useState<any[]>(localItems);
   const [isFetchingMarket, setIsFetchingMarket] = useState(false);
 
@@ -50,12 +49,12 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [viewShape, setViewShape] = useState<ViewShape>("square");
 
-  // Sorting States (Default kita set ke price_asc atau sesuaikan kebutuhan)
+  // Sorting States (Default sekarang 'identifier')
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
-  const [sortOption, setSortOption] = useState<SortOptionId>("price_asc");
+  const [sortOption, setSortOption] = useState<SortOptionId>("identifier");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
-  // --- 1. EXTRACT TRAITS (Tetap dari Local JSON agar lengkap) ---
+  // --- 1. EXTRACT TRAITS ---
   const availableTraits = useMemo(() => {
     const traitsMap: Record<string, Set<string>> = {};
     for (const item of localItems) {
@@ -78,19 +77,24 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     return result;
   }, [localItems]);
 
-  // --- 2. LOGIKA GANTI SORTING (FETCH KE SERVER) ---
+  // --- 2. LOGIKA SORTING SWITCHER ---
   const applySortOption = async (opt: SortOptionId) => {
     setSortOption(opt);
     setCurrentPage(1);
 
-    // Karena user HANYA minta Last Sale & Best Listing, keduanya butuh fetch.
-    // Jadi kita langsung fetch saja tanpa perlu cek kondisi rumit.
+    // [LOGIC BARU] KEMBALI KE DEFAULT (IDENTIFIER)
+    if (opt === "identifier") {
+        console.log("[Client] Switching back to local identifier sort");
+        setDisplayItems(localItems); // Reset ke data JSON awal
+        setIsFetchingMarket(false);
+        setViewShape("square"); // Opsional: Balik ke kotak jika mau
+        return; // STOP, jangan fetch ke server
+    }
 
+    // [LOGIC LAMA] FETCH API (Last Sale / Best Listing)
     setIsFetchingMarket(true);
-
     try {
       console.log(`[Client] Fetching market data for: ${opt}`);
-
       const marketData = await getMarketDataAction(
         opt,
         currentChain,
@@ -99,27 +103,22 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
       );
 
       if (marketData && marketData.items && marketData.items.length > 0) {
-        // GABUNGKAN DATA: Ambil Harga dari Server + Gambar/Nama dari Local JSON
         const mergedItems = marketData.items.map((marketItem: any) => {
           const localMatch = localItems.find(
             (li) => String(li.identifier) === String(marketItem.identifier)
           );
-
           return {
-            ...localMatch, // Base: Metadata lokal (Image HD, Traits)
-            ...marketItem, // Override: Harga/Status terbaru dari Server
-
-            // Safety check: pastikan ID & Image tidak hilang
+            ...localMatch, 
+            ...marketItem, 
             identifier: marketItem.identifier,
             image_url: localMatch?.image_url || marketItem.image_url || localMatch?.display_image_url,
             name: localMatch?.name || marketItem.name || `#${marketItem.identifier}`
           };
         });
-
         setDisplayItems(mergedItems);
+        // Opsional: Otomatis ubah bentuk ke bulat untuk market data
+        setViewShape("circle");
       } else {
-        // Jika Server return kosong (misal tidak ada listing), kosongkan list
-        console.warn("No items returned from server sorting.");
         setDisplayItems([]);
       }
     } catch (error) {
@@ -129,7 +128,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     }
   };
 
-  // --- 3. FILTER & FINAL PROCESSING ---
+  // --- 3. FILTER & FINAL SORTING ---
   const filteredAndSorted = useMemo(() => {
     let result = [...displayItems];
 
@@ -164,15 +163,25 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
       });
     }
 
-    // C. Sorting Direction (Asc/Desc)
-    // Data dari server biasanya sudah terurut Ascending (Low to High / Oldest to Newest).
-    // Jika user pilih Desc, kita tinggal balik array-nya.
+    // C. Sorting Logic
+    if (sortOption === "identifier") {
+       // Sort Manual berdasarkan angka ID (1, 2, 10, bukan 1, 10, 2)
+       result.sort((a, b) => {
+          const idA = parseInt(a.identifier);
+          const idB = parseInt(b.identifier);
+          return idA - idB;
+       });
+    } 
+    // Note: Untuk "price_asc" dan "last-sale", data dari server biasanya sudah terurut,
+    // jadi kita hanya perlu memikirkan 'direction' reverse di bawah.
+
+    // D. Direction Reverse
     if (sortDirection === "desc") {
         result.reverse();
     }
 
     return result;
-  }, [displayItems, search, selectedAttributes, sortDirection]);
+  }, [displayItems, search, selectedAttributes, sortOption, sortDirection]);
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(filteredAndSorted.length / ITEMS_PER_PAGE));
@@ -200,17 +209,11 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     setIsItemModalOpen(true);
     setHistory([]);
     setIsLoadingDetail(true);
-
     try {
-      const historyData = await getNFTEventsAction(currentChain, currentContract, item.identifier);
-      if (historyData && historyData.asset_events) {
-          setHistory(historyData.asset_events);
-      }
-    } catch (error) {
-      console.error("Gagal fetch history:", error);
-    } finally {
-      setIsLoadingDetail(false);
-    }
+      const h = await getNFTEventsAction(currentChain, currentContract, item.identifier);
+      if (h?.asset_events) setHistory(h.asset_events);
+    } catch (e) { console.error(e); } 
+    finally { setIsLoadingDetail(false); }
   };
 
   return (
@@ -266,11 +269,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
       <CollectItemModal
         open={isItemModalOpen}
         item={selectedItem}
-        detail={{
-            ...selectedItem,
-            contract: currentContract,
-            chain: currentChain
-        }}
+        detail={{ ...selectedItem, contract: currentContract, chain: currentChain }}
         history={history}
         isLoading={isLoadingDetail}
         onClose={() => setIsItemModalOpen(false)}

@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 // Tambahkan 'price_asc' ke tipe ini
-export type SortOptionId = "best-offer" | "last-sale" | "rarity" | "time-listed" | "price_asc";
+export type SortOptionId = "identifier" | "last-sale" | "price_asc";
 export type SortDirection = "asc" | "desc";
 
 type SortModalProps = {
@@ -26,6 +26,7 @@ export default function SortModal({
   if (!open) return null;
 
   const options = [
+    { id:"identifier", label: "By Identifier" },
     { id: "price_asc", label: "Best listing (Low Price)" }, // <--- FITUR BARU
     //{ id: "best-offer", label: "Best offer" },
     { id: "last-sale", label: "Last sale" },
