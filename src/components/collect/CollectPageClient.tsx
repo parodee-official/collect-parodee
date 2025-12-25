@@ -29,10 +29,11 @@ type CollectPageClientProps = {
 export default function CollectPageClient({ initialItems, activeSlug }: CollectPageClientProps) {
   const currentContract = CONTRACTS[activeSlug] || CONTRACTS["parodee-pixel-chaos"];
   const currentChain = CHAINS[activeSlug] || "ethereum";
-
+  
+  // Keep a clean copy of local data
   const localItems = initialItems;
 
-  // --- STATE UTAMA ---
+  // --- STATE ---
   const [displayItems, setDisplayItems] = useState<any[]>(localItems);
   const [isFetchingMarket, setIsFetchingMarket] = useState(false);
 
@@ -49,10 +50,20 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [viewShape, setViewShape] = useState<ViewShape>("square");
 
-  // Sorting States (Default sekarang 'identifier')
+  // Sorting
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const [sortOption, setSortOption] = useState<SortOptionId>("identifier");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+
+  // --- HELPER: Shuffle Array (Fisher-Yates) ---
+  const shuffleArray = (array: any[]) => {
+    const newArr = [...array];
+    for (let i = newArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+    }
+    return newArr;
+  };
 
   // --- 1. EXTRACT TRAITS ---
   const availableTraits = useMemo(() => {
@@ -77,24 +88,26 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     return result;
   }, [localItems]);
 
-  // --- 2. LOGIKA SORTING SWITCHER ---
+  // --- 2. LOGIC SORTING SWITCHER (HYBRID RANDOMIZE) ---
   const applySortOption = async (opt: SortOptionId) => {
     setSortOption(opt);
     setCurrentPage(1);
 
-    // [LOGIC BARU] KEMBALI KE DEFAULT (IDENTIFIER)
+    // CASE A: BACK TO DEFAULT (Identifier)
     if (opt === "identifier") {
-        console.log("[Client] Switching back to local identifier sort");
-        setDisplayItems(localItems); // Reset ke data JSON awal
+        console.log("[Client] Reset to local identifier sort");
+        setDisplayItems(localItems); 
         setIsFetchingMarket(false);
-        setViewShape("square"); // Opsional: Balik ke kotak jika mau
-        return; // STOP, jangan fetch ke server
+        setViewShape("square"); 
+        return; 
     }
 
-    // [LOGIC LAMA] FETCH API (Last Sale / Best Listing)
+    // CASE B: API FETCH (Top 50) + RANDOM REST
     setIsFetchingMarket(true);
     try {
-      console.log(`[Client] Fetching market data for: ${opt}`);
+      console.log(`[Client] Fetching Top 50 for: ${opt}`);
+      
+      // 1. Fetch Top 50 from Server
       const marketData = await getMarketDataAction(
         opt,
         currentChain,
@@ -102,11 +115,18 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
         currentContract
       );
 
+      let topItems: any[] = [];
+      const fetchedIds = new Set<string>();
+
       if (marketData && marketData.items && marketData.items.length > 0) {
-        const mergedItems = marketData.items.map((marketItem: any) => {
+        // Merge API data with Local Metadata
+        topItems = marketData.items.map((marketItem: any) => {
           const localMatch = localItems.find(
             (li) => String(li.identifier) === String(marketItem.identifier)
           );
+          
+          if (localMatch) fetchedIds.add(String(localMatch.identifier));
+
           return {
             ...localMatch, 
             ...marketItem, 
@@ -115,20 +135,31 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
             name: localMatch?.name || marketItem.name || `#${marketItem.identifier}`
           };
         });
-        setDisplayItems(mergedItems);
-        // Opsional: Otomatis ubah bentuk ke bulat untuk market data
-        setViewShape("circle");
-      } else {
-        setDisplayItems([]);
       }
+
+      // 2. Get the "Rest" of the items (Local items NOT in Top 50)
+      const remainingItems = localItems.filter(item => !fetchedIds.has(String(item.identifier)));
+
+      // 3. Shuffle the remaining items
+      const randomizedRest = shuffleArray(remainingItems);
+
+      // 4. Combine: [Top 50 Real Data] + [Randomized Local Data]
+      // This ensures the list is full (e.g. 3333 items) but starts with meaningful market data
+      setDisplayItems([...topItems, ...randomizedRest]);
+      
+      // Auto-switch shape to circle for market view
+      setViewShape("circle");
+
     } catch (error) {
       console.error("Gagal fetch market data:", error);
+      // Fallback: just show local randomized if API fails
+      setDisplayItems(shuffleArray(localItems));
     } finally {
       setIsFetchingMarket(false);
     }
   };
 
-  // --- 3. FILTER & FINAL SORTING ---
+  // --- 3. FILTER & FINAL PROCESSING ---
   const filteredAndSorted = useMemo(() => {
     let result = [...displayItems];
 
@@ -165,15 +196,14 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
 
     // C. Sorting Logic
     if (sortOption === "identifier") {
-       // Sort Manual berdasarkan angka ID (1, 2, 10, bukan 1, 10, 2)
+       // Only sort locally if we are in "Identifier" mode.
+       // In "Market Mode", the array order is already set (Top 50 + Random)
        result.sort((a, b) => {
           const idA = parseInt(a.identifier);
           const idB = parseInt(b.identifier);
           return idA - idB;
        });
     } 
-    // Note: Untuk "price_asc" dan "last-sale", data dari server biasanya sudah terurut,
-    // jadi kita hanya perlu memikirkan 'direction' reverse di bawah.
 
     // D. Direction Reverse
     if (sortDirection === "desc") {
@@ -189,7 +219,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
   const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
   const pageItems = filteredAndSorted.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  // --- Handlers Lain ---
+  // Handlers
   const handleToggleAttribute = (traitType: string, value: string) => {
     setSelectedAttributes((prev) => {
       const current = prev[traitType] || [];
