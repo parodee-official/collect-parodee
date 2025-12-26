@@ -11,31 +11,18 @@ const COLLECTION_INFO: Record<string, { title: string; subtitle: string; descrip
     title: "Pixel Chaos",
     subtitle: "The Genesis Collection on Ethereum",
     description: `
-      Parodee Pixel Chaos adalah koleksi genesis yang mengeksplorasi keindahan dalam ketidakteraturan.
-      Dibangun di atas jaringan Ethereum, setiap pixel disusun secara generatif untuk menciptakan karakter yang unik dan tak terduga.
-
-      Koleksi ini bukan sekadar gambar, melainkan kunci akses ke ekosistem Parodee yang lebih luas, memberikan pemegangnya hak suara dalam DAO dan akses prioritas ke rilis mendatang.
+      Parodee Pixel Chaos
     `,
     highlights: [
-      "✨ 3,333 Unique Items",
-      "🔒 Ethereum Mainnet",
-      "🎨 Generative Pixel Art",
-      "🎫 Genesis Access Pass"
     ]
   },
   "parodee-hyperevm": {
     title: "HyperEVM Edition",
     subtitle: "Expanding Horizons on HyperEVM",
     description: `
-      Melangkah lebih jauh ke dalam teknologi blockchain berkinerja tinggi, edisi HyperEVM menghadirkan utilitas yang lebih cepat dan efisien.
-
-      Koleksi ini dirancang khusus untuk mendemonstrasikan kapabilitas jaringan HyperEVM, dengan biaya gas yang minimal dan kecepatan transaksi instan. Ini adalah evolusi berikutnya dari eksperimen seni digital kami.
+    parodee-hyperevm
     `,
     highlights: [
-      "⚡ High Performance Chain",
-      "💎 Exclusive Hyper Traits",
-      "⛽ Near-Zero Gas Fees",
-      "🚀 Experimental Utility"
     ]
   }
 };
