@@ -48,6 +48,40 @@ export async function getNFTOffersAction(chain: string, address: string, identif
   } catch (error) { return { orders: [] }; }
 }
 
+export async function getCollectionStatsAction(collectionSlug: string) {
+  if (!collectionSlug) return null;
+
+  try {
+    // Memanggil fungsi yang sudah ada di opensea.ts
+    const data = await openSeaClient.getCollectionStats(collectionSlug);
+
+    // OpenSea API V2 mengembalikan stats di dalam object properti 'total'
+    return data.total || null;
+  } catch (error) {
+    console.error("[NFTAction] Error fetching collection stats:", error);
+    return null;
+  }
+}
+
+
+/**
+ * 2. Action untuk mengambil METADATA (Profil: Deskripsi, Banner, Image)
+ */
+export async function getCollectionMetadataAction(collectionSlug: string) {
+  if (!collectionSlug) return null;
+
+  try {
+    // Panggil fungsi dari opensea.ts
+    const data = await openSeaClient.getCollectionMetadata(collectionSlug);
+
+    // API OpenSea V2 Collection Metadata mengembalikan object langsung
+    return data || null;
+  } catch (error) {
+    console.error("[NFTAction] Error metadata:", error);
+    return null;
+  }
+}
+
 // =================================================================
 // 2. FUNGSI HYBRID SORTING (MARKET DATA)
 // =================================================================

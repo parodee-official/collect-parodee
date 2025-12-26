@@ -49,6 +49,11 @@ export const openSeaClient = {
     return _fetchOpenSea(`/collections/${slug}/stats`);
   },
 
+  getCollectionMetadata: async (slug: string) => {
+    // Endpoint V2: Mengambil deskripsi, banner, social links, dll
+    return _fetchOpenSea(`/collections/${slug}`);
+  },
+
   getSingleNFT: async (chain: string, address: string, identifier: string) => {
     return _fetchOpenSea(`/chain/${chain}/contract/${address}/nfts/${identifier}`);
   },
