@@ -1,3 +1,4 @@
+// src/components/collect/CollectPageClient.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -29,7 +30,7 @@ type CollectPageClientProps = {
 export default function CollectPageClient({ initialItems, activeSlug }: CollectPageClientProps) {
   const currentContract = CONTRACTS[activeSlug] || CONTRACTS["parodee-pixel-chaos"];
   const currentChain = CHAINS[activeSlug] || "ethereum";
-  
+
   // Keep a clean copy of local data
   const localItems = initialItems;
 
@@ -48,6 +49,8 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
   const [history, setHistory] = useState<any[]>([]);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+
+  // Default bentuk grid "square" (Kotak). Tidak akan berubah kecuali user klik tombol di toolbar.
   const [viewShape, setViewShape] = useState<ViewShape>("square");
 
   // Sorting
@@ -96,17 +99,17 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     // CASE A: BACK TO DEFAULT (Identifier)
     if (opt === "identifier") {
         console.log("[Client] Reset to local identifier sort");
-        setDisplayItems(localItems); 
+        setDisplayItems(localItems);
         setIsFetchingMarket(false);
-        setViewShape("square"); 
-        return; 
+        // [FIX] Menghapus setViewShape("square") agar bentuk tidak berubah otomatis
+        return;
     }
 
     // CASE B: API FETCH (Top 50) + RANDOM REST
     setIsFetchingMarket(true);
     try {
       console.log(`[Client] Fetching Top 50 for: ${opt}`);
-      
+
       // 1. Fetch Top 50 from Server
       const marketData = await getMarketDataAction(
         opt,
@@ -124,12 +127,12 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
           const localMatch = localItems.find(
             (li) => String(li.identifier) === String(marketItem.identifier)
           );
-          
+
           if (localMatch) fetchedIds.add(String(localMatch.identifier));
 
           return {
-            ...localMatch, 
-            ...marketItem, 
+            ...localMatch,
+            ...marketItem,
             identifier: marketItem.identifier,
             image_url: localMatch?.image_url || marketItem.image_url || localMatch?.display_image_url,
             name: localMatch?.name || marketItem.name || `#${marketItem.identifier}`
@@ -144,11 +147,9 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
       const randomizedRest = shuffleArray(remainingItems);
 
       // 4. Combine: [Top 50 Real Data] + [Randomized Local Data]
-      // This ensures the list is full (e.g. 3333 items) but starts with meaningful market data
       setDisplayItems([...topItems, ...randomizedRest]);
-      
-      // Auto-switch shape to circle for market view
-      setViewShape("circle");
+
+      // [FIX] Menghapus setViewShape("circle") agar bentuk tidak berubah otomatis
 
     } catch (error) {
       console.error("Gagal fetch market data:", error);
@@ -203,7 +204,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
           const idB = parseInt(b.identifier);
           return idA - idB;
        });
-    } 
+    }
 
     // D. Direction Reverse
     if (sortDirection === "desc") {
@@ -242,7 +243,7 @@ export default function CollectPageClient({ initialItems, activeSlug }: CollectP
     try {
       const h = await getNFTEventsAction(currentChain, currentContract, item.identifier);
       if (h?.asset_events) setHistory(h.asset_events);
-    } catch (e) { console.error(e); } 
+    } catch (e) { console.error(e); }
     finally { setIsLoadingDetail(false); }
   };
 

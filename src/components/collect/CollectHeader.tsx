@@ -6,13 +6,21 @@ import { usePathname, useSearchParams } from "next/navigation"
 export default function CollectHeader() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const slug = searchParams.get("slug")
+
+  // Ambil slug saat ini, default null jika tidak ada
+  const currentSlug = searchParams.get("slug")
 
   // ---- helpers ----
   const formatSlug = (value: string) =>
     value
       .replace(/-/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase())
+
+  // Helper untuk membuat URL tetap membawa slug
+  // Jika slug ada, tambahkan ke URL tujuan. Jika tidak, biarkan polos.
+  const getLink = (path: string) => {
+    return currentSlug ? `${path}?slug=${currentSlug}` : path
+  }
 
   // ---- title resolver ----
   const titleMap: Record<string, string> = {
@@ -23,8 +31,8 @@ export default function CollectHeader() {
 
   let title = titleMap[pathname] ?? "Collection"
 
-  if (pathname === "/collect/items" && slug) {
-    title = formatSlug(slug)
+  if (pathname === "/collect/items" && currentSlug) {
+    title = formatSlug(currentSlug)
   }
 
   return (
@@ -43,8 +51,6 @@ export default function CollectHeader() {
           "
           style={{ backgroundImage: "url('/images/Banner.png')" }}
         >
-          {/* <div className="absolute inset-0 bg-black/5" /> */}
-
           <h1
             className="
               absolute inset-0
@@ -63,18 +69,22 @@ export default function CollectHeader() {
       {/* SUB NAV */}
       <section className="mt-6 mb-6">
         <nav className="flex justify-center gap-8 md:gap-10 lg:gap-12 text-sm md:text-lg">
-          <NavItem href="/collect/about" label="About" />
-          <NavItem href="/collect/items" label="Items" />
-          <NavItem href="/collect/dashboard" label="Dashboard" />
+          {/* Gunakan helper getLink di sini */}
+          <NavItem href={getLink("/collect/about")} label="About" activePath="/collect/about" />
+          <NavItem href={getLink("/collect/items")} label="Items" activePath="/collect/items" />
+          <NavItem href={getLink("/collect/dashboard")} label="Dashboard" activePath="/collect/dashboard" />
         </nav>
       </section>
     </>
   )
 }
 
-function NavItem({ href, label }: { href: string; label: string }) {
+// Update NavItem agar logic active-nya benar
+function NavItem({ href, label, activePath }: { href: string; label: string; activePath: string }) {
   const pathname = usePathname()
-  const isActive = pathname === href
+
+  // Cek active hanya berdasarkan pathname (abaikan query params slug)
+  const isActive = pathname === activePath
 
   return (
     <Link

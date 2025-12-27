@@ -1,18 +1,16 @@
 "use client";
 
-import { ViewShape } from "./CollectToolbar"; // Import tipe
+import { ViewShape } from "./CollectToolbar";
 
 type CollectGridProps = {
   items: any[];
   onItemClick?: (item: any) => void;
-  viewShape?: ViewShape; // Prop baru untuk bentuk
+  viewShape?: ViewShape;
 };
 
 export default function CollectGrid({ items, onItemClick, viewShape = "square" }: CollectGridProps) {
   if (!items?.length) return null;
 
-  // Tentukan class border radius berdasarkan viewShape
-  // Jika 'circle' -> rounded-full, Jika 'square' -> rounded biasa
   const shapeClass = viewShape === "circle"
     ? "rounded-full"
     : "rounded-[18px] md:rounded-[24px]";
@@ -38,10 +36,9 @@ export default function CollectGrid({ items, onItemClick, viewShape = "square" }
               md:shadow-[6px_6px_0_rgba(0,0,0,1)]
 
               active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
-              hover:translate-x-1 hover:translate-y-1 hover:shadow-none
+              md:hover:translate-x-1 md:hover:translate-y-1 md:hover:shadow-none
               focus:outline-none
 
-              transition-all duration-500 ease-in-out
             `}
           >
             {imageUrl ? (
