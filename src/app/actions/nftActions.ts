@@ -52,36 +52,60 @@ export async function getCollectionStatsAction(collectionSlug: string) {
   if (!collectionSlug) return null;
 
   try {
-    // Memanggil fungsi yang sudah ada di opensea.ts
-    const data = await openSeaClient.getCollectionStats(collectionSlug);
+    // [OPTIMASI] Jalankan kedua-dua request serentak
+    const [statsData, bestListingData] = await Promise.all([
+      // Request 1: Stats Umum
+      openSeaClient.getCollectionStats(collectionSlug).catch(() => null),
 
-    // OpenSea API V2 mengembalikan stats di dalam object properti 'total'
-    return data.total || null;
+      // Request 2: Real-time Listing (Untuk Floor Price tepat)
+      openSeaClient.fetchOpenSea(
+         `/listings/collection/${collectionSlug}/best`,
+         { next: { revalidate: 0 } }
+       ).catch(() => null)
+    ]);
+
+    // Proses Data Listing (jika ada)
+    let realTimeFloor = null;
+    if (bestListingData && bestListingData.listings && bestListingData.listings[0]) {
+       const listing = bestListingData.listings[0];
+       if (listing.price && listing.price.current) {
+          const val = listing.price.current.value;
+          const dec = listing.price.current.decimals;
+          realTimeFloor = parseInt(val) / Math.pow(10, dec);
+       }
+    }
+
+    // Gabungkan Data
+    if (!statsData || !statsData.total) return null;
+
+    return {
+      ...statsData.total,
+      // Gunakan listing floor jika ada, jika tidak guna stats floor
+      floor_price: realTimeFloor || statsData.total.floor_price,
+      intervals: statsData.intervals || []
+    };
+
   } catch (error) {
     console.error("[NFTAction] Error fetching collection stats:", error);
     return null;
   }
 }
 
-
 /**
- * 2. Action untuk mengambil METADATA (Profil: Deskripsi, Banner, Image)
+ * 2. Action METADATA (Profil) - Sudah Cukup Baik
+ * (Metadata jarang berubah, jadi logika sebelumnya sudah oke)
  */
 export async function getCollectionMetadataAction(collectionSlug: string) {
   if (!collectionSlug) return null;
 
   try {
-    // Panggil fungsi dari opensea.ts
     const data = await openSeaClient.getCollectionMetadata(collectionSlug);
-
-    // API OpenSea V2 Collection Metadata mengembalikan object langsung
     return data || null;
   } catch (error) {
     console.error("[NFTAction] Error metadata:", error);
     return null;
   }
 }
-
 // =================================================================
 // 2. FUNGSI HYBRID SORTING (MARKET DATA)
 // =================================================================

@@ -42,7 +42,7 @@ export default async function CollectAboutPage({ searchParams }: Props) {
         <CollectHeader />
       </Suspense>
 
-      <div className="max-w-3xl mx-auto mt-12 p-6 md:p-0">
+      <div className="max-w-4xl mx-auto mt-12 ">
 
         {/* JUDUL UTAMA */}
         <div className="mb-10 text-center">

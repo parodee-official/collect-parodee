@@ -3,28 +3,33 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from "next/image"
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation' // Tambahkan useSearchParams
 
-export default function Navbar() {
+export default function HeaderNav() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const searchParams = useSearchParams() // Hook untuk membaca ?slug=...
 
-  // const isCollectPage = pathname === '/collect/items'
+  // Cek apakah sedang di halaman collect
   const isCollectPage = pathname.startsWith('/collect')
 
+  // Ambil slug aktif. Jika tidak ada, default ke 'parodee-pixel-chaos'
+  // Ini penting agar menu 'Pixel Chaos' menyala saat pertama kali buka halaman dashboard
+  const activeSlug = searchParams.get('slug') || 'parodee-pixel-chaos'
+
   const collectMenuOptions = [
-  { label: 'Pixel Chaos', slug: 'parodee-pixel-chaos' },
-  { label: 'First Gen', slug: 'parodee-hyperevm' },
-]
+    { label: 'Pixel Chaos', slug: 'parodee-pixel-chaos' },
+    { label: 'First Gen', slug: 'parodee-hyperevm' },
+  ]
 
-const getCollectBasePath = () => {
-  if (pathname.startsWith("/collect/about")) return "/collect/about"
-  if (pathname.startsWith("/collect/dashboard")) return "/collect/dashboard"
-  if (pathname.startsWith("/collect/items")) return "/collect/items"
+  // Helper simpel untuk base path (tanpa regex berlebihan)
+  const getCollectBasePath = () => {
+    // Array whitelist path yang valid untuk navigasi slug
+    const validPaths = ["/collect/about", "/collect/dashboard", "/collect/items"]
+    return validPaths.find(path => pathname.startsWith(path)) || "/collect/items"
+  }
 
-  // fallback kalau masih di /collect
-  return "/collect/items"
-}
+  const basePath = getCollectBasePath()
 
   return (
     <nav className="w-full bg-brand-main md:border-b px-4 py-2 md:pt-6 md:px-8 border-[#1E1E1E]">
@@ -39,8 +44,8 @@ const getCollectBasePath = () => {
               width={200}
               height={64}
               className="w-auto h-6 sm:h-8 md:h-10"
+              priority // Logo prioritas tinggi LCP
             />
-
           </Link>
 
           {/* Desktop Menu */}
@@ -48,36 +53,46 @@ const getCollectBasePath = () => {
 
             {!isCollectPage && (
               <>
-                <Link href="/collect" className="hover:text-white">
+                <Link href="/collect" className="hover:text-white transition-colors">
                   Collections
                 </Link>
-                <Link href="#/" className="hover:text-white">
+                <Link href="#/" className="hover:text-white transition-colors">
                   Art
                 </Link>
-                <Link href="#/" className="hover:text-white">
+                <Link href="#/" className="hover:text-white transition-colors">
                   Item
                 </Link>
               </>
             )}
 
             {isCollectPage &&
-              collectMenuOptions.map((option) => (
-                <Link
-                  key={option.slug}
-                  // href={`/collect/items?slug=${option.slug}`}
-                  href={`${getCollectBasePath()}?slug=${option.slug}`}
-                  className="hover:text-white transition"
-                >
-                  {option.label}
-                </Link>
-              ))}
+              collectMenuOptions.map((option) => {
+                const isActive = activeSlug === option.slug
+
+                return (
+                  <Link
+                    key={option.slug}
+                    href={`${basePath}?slug=${option.slug}`}
+                    prefetch={true} // ⚡️ OPTIMASI: Load data saat hover
+                    className={`
+                      transition-colors duration-200
+                      ${isActive
+                        ? "text-white font-bold" // Visual feedback aktif
+                        : "text-zinc-400 hover:text-white"
+                      }
+                    `}
+                  >
+                    {option.label}
+                  </Link>
+                )
+              })}
 
           </div>
 
           {/* Mobile Button */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden flex items-center justify-center  text-zinc-300 hover:text-white"
+            className="md:hidden flex items-center justify-center text-zinc-300 hover:text-white transition-colors"
             aria-label="Toggle menu"
           >
             <svg
@@ -88,11 +103,7 @@ const getCollectBasePath = () => {
               stroke="currentColor"
               strokeWidth={2}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
@@ -100,35 +111,40 @@ const getCollectBasePath = () => {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden border-t border-[#1E1E1E] ">
+        <div className="md:hidden border-t border-[#1E1E1E]">
           <div className="flex flex-col px-4 py-3 text-[15px] text-white">
-
             {!isCollectPage && (
               <>
-                <Link href="/collect" className="py-2">
+                <Link href="/collect" className="py-2 hover:text-zinc-300" onClick={() => setOpen(false)}>
                   Collections
                 </Link>
-                <Link href="/art" className="py-2">
+                <Link href="/art" className="py-2 hover:text-zinc-300" onClick={() => setOpen(false)}>
                   Art
                 </Link>
-                <Link href="/item" className="py-2">
+                <Link href="/item" className="py-2 hover:text-zinc-300" onClick={() => setOpen(false)}>
                   Item
                 </Link>
               </>
             )}
 
             {isCollectPage &&
-              collectMenuOptions.map((option) => (
-                <Link
-                  key={option.slug}
-                  href={`${getCollectBasePath()}?slug=${option.slug}`}
-                  // href={`/collect?slug=${option.slug}`}
-                  className="py-2"
-                >
-                  {option.label}
-                </Link>
-              ))}
-
+              collectMenuOptions.map((option) => {
+                 const isActive = activeSlug === option.slug
+                 return (
+                  <Link
+                    key={option.slug}
+                    href={`${basePath}?slug=${option.slug}`}
+                    prefetch={true}
+                    onClick={() => setOpen(false)} // Tutup menu setelah klik
+                    className={`
+                      py-2 block
+                      ${isActive ? "text-brand-yellow font-bold" : "text-zinc-300"}
+                    `}
+                  >
+                    {option.label}
+                  </Link>
+                )
+              })}
           </div>
         </div>
       )}

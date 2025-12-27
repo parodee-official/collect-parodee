@@ -28,12 +28,10 @@ async function _fetchOpenSea(endpoint: string, options: RequestInit = {}) {
 }
 
 export const openSeaClient = {
-  // 👇👇👇 INI YANG KURANG SEBELUMNYA 👇👇👇
   // Kita expose fungsi internal agar bisa dipanggil dari nftActions.ts
   fetchOpenSea: async (endpoint: string, options: RequestInit = {}) => {
     return _fetchOpenSea(endpoint, options);
   },
-  // 👆👆👆 ----------------------------- 👆👆👆
 
   getCollectionNFTs: async (slug: string, limit = 20) => {
     return _fetchOpenSea(`/collection/${slug}/nfts?limit=${limit}`);
@@ -45,13 +43,27 @@ export const openSeaClient = {
     });
   },
 
+  // getCollectionStats: async (slug: string) => {
+  //   return _fetchOpenSea(`/collections/${slug}/stats`);
+  // },
+
+  // getCollectionMetadata: async (slug: string) => {
+  //   // Endpoint V2: Mengambil deskripsi, banner, social links, dll
+  //   return _fetchOpenSea(`/collections/${slug}`);
+  // },
+
   getCollectionStats: async (slug: string) => {
-    return _fetchOpenSea(`/collections/${slug}/stats`);
+    // Gunakan revalidate: 60 (1 menit) atau 0 (realtime)
+    return _fetchOpenSea(`/collections/${slug}/stats`, {
+      next: { revalidate: 60 }
+    });
   },
 
+  // Metadata boleh di-cache lama (misal 1 jam)
   getCollectionMetadata: async (slug: string) => {
-    // Endpoint V2: Mengambil deskripsi, banner, social links, dll
-    return _fetchOpenSea(`/collections/${slug}`);
+    return _fetchOpenSea(`/collections/${slug}`, {
+      next: { revalidate: 86400 }
+    });
   },
 
   getSingleNFT: async (chain: string, address: string, identifier: string) => {
@@ -82,5 +94,9 @@ export const openSeaClient = {
         next: { revalidate: 60 },
       }
     );
+  },
+
+  _fetchOpenSea: async (endpoint: string, options: RequestInit = {}) => {
+    return _fetchOpenSea(endpoint, options);
   },
 };
